@@ -22,21 +22,35 @@ app.post('/stk',(req,res) =>{
 
     res.json({ phone,amount })
 })
+//generating a timestamp
+const date =new Date();
+const timestamp = 
+     date.getFullYear()+
+     ("0" + (date.getMonth() + 1)).slice(-2) +
+     ("0" + date.getDate()).slice(-2) +
+     ("0" + date.getHours()).slice(-2) +
+     ("0" + date.getMinutes()).slice(-2) +
+     ("0" + date.getSeconds()).slice(-2) 
+    
+const shorcode = process.env.MPESA_PAYBILL;
+const passkey = process.env.MPESA_PASSKEY;
+
+const password = new Buffer.from(shorcode + passkey + timestamp).toString("base64");
 
 await axios.post(
-    "https://sandbox.safaricom.co.ke/mpesa/stkpushquery/v1/query"
+    "https://sandbox.safaricom.co.ke/mpesa/stkpushquery/v1/query",
 
 {    
    BusinessShortCode:process.env.MPESA_PAYBILL ,   
-   Password : "MTc0Mzc5YmZiMjc5TliZGJjZjE1OGU5N2RkNzFhNDY3Y2QyZTBjODkzMDU5YjEwZjc4ZTZiNzJhZGExZWQyYzkxOTIwMTYwMjE2MTY1NjI3",    
-   Timestamp:"20160216165627",    
-   CheckoutRequestID: "ws_CO_260520211133524545",     
-   ResponseCode:"0",    
-   ResponseDescription: "The service request has been accepted successfully",    
-   MerchantRequestID:"22205-34066-1",    
-   CheckoutRequestID: "ws_CO_13012021093521236557",
-   ResultCode:"0",
-   ResultDesc:"The service request is processed successfully.",
+   Password : password,    
+   Timestamp:timestamp,    
+   Amount:"1",
+   PartyA:"254769784198",
+   PartyB:"5170923",
+   PhoneNumber:"254769784198",
+   TransactionType:"CustomerPayBillOnline",
+   CallBackUrl:"httpd://mydomain.com/pat",
+   Transaction
 
 }  
 )
