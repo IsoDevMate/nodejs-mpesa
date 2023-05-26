@@ -2,11 +2,11 @@
   "name": "nodejs-mpesa",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "index1.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node inde.js",
-    "dev": "nodemon index.js"
+    "start": "node index1.js",
+    "dev": "nodemon index1.js"
   },
   "keywords": [],
   "author": "",
