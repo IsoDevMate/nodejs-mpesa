@@ -3,8 +3,13 @@ const app = express();
 require("dotenv").config();
 const cors = require('cors');
 const axios = require('axios');
+const jwt = require('jsonwebtoken')
 
 const port = process.env.PORT || 5003;
+const user ={id:123, username: 'barack ouma'}
+const secretKey = 'your-secret-key';
+const token = jwt.sign(user, 'secretKey')
+
 app.listen(port, () => {
   console.log(`Server listening on ${port}`);
 });
