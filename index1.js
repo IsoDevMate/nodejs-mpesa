@@ -8,6 +8,13 @@ const port = process.env.PORT || 5003;
 const bodyParser = require('body-parser');
 const Payment = require('./models/payment');
 const Payment = require('./models/payment');
+const jwt = require('jsonwebtoken');
+
+const user = { id: 123, username: 'barack ouma' };
+const secretKey = process.env.MPESA_CONSUMER_SECRET
+
+const tokens = jwt.sign(user, secretKey);
+
 
 app.listen(port, () => {
   console.log(`Server listening on ${port}`);
@@ -41,6 +48,29 @@ const generateToken = (req, res, next) => {
       res.status(500).json(err.message);
     });
 };
+//authenticateToken middlewware function 
+const authenticateToken = (req,res,next) =>{
+    const tokens = req.headers.authorization;
+
+    if(tokens){
+        jwt.verify(tokens,secretKey,(err,user) =>{
+          if(err)  {
+            return res.sendStatus(403)
+          }
+          req.user = user
+          next()
+        })
+    }else{
+        res.sendStatus(401)
+    }
+}
+
+app.get('/protected route',authenticateToken,(req,res) =>{
+    //access the authenticated user
+    res.json({ message: 'protected route accessed succesfully'})
+})
+
+
 
 app.get('/token', generateToken, (req, res) => {
   res.send('<h1>WELCOME</h1>');
