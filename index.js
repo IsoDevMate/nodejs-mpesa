@@ -3,12 +3,11 @@ const app = express();
 require("dotenv").config();
 const cors = require('cors');
 const axios = require('axios');
-const jwt = require('jsonwebtoken')
+const bodyParser = require('body-parser');
 
 const port = process.env.PORT || 5003;
 const user ={id:123, username: 'barack ouma'}
-const secretKey = 'your-secret-key';
-const token = jwt.sign(user, 'secretKey')
+app.use(cors());
 
 app.listen(port, () => {
   console.log(`Server listening on ${port}`);
@@ -16,7 +15,6 @@ app.listen(port, () => {
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors());
 
 const generateToken = async (req, res, next) => {
   try {
@@ -24,10 +22,13 @@ const generateToken = async (req, res, next) => {
     const consumer = process.env.MPESA_CONSUMER_KEY;
     const auth = Buffer.from(`${consumer}:${secret}`).toString("base64");
 
-    const response = await axios.get("https://api.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials", {
+    const response = await axios.get('https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials', {
       headers: {
         Authorization: `Basic ${auth}`,
       },
+      params:{
+        grant_type: 'client_credentials'
+      }
     });
 
     req.token = response.data.access_token;
@@ -38,38 +39,29 @@ const generateToken = async (req, res, next) => {
   }
 };
 
-app.get('/token', generateToken, (req, res) => {
-  res.send('<h1>WELCOME</h1>');
-});
 
-app.post('/stk', generateToken, async (req, res) => {
-  const phone = req.body.phone.substring(1);
-  const amount = req.body.amount;
-
-  res.json({ phone, amount });
-});
-
-const date = new Date();
-const timestamp =
-  date.getFullYear() +
-  ("0" + (date.getMonth() + 1)).slice(-2) +
-  ("0" + date.getDate()).slice(-2) +
-  ("0" + date.getHours()).slice(-2) +
-  ("0" + date.getMinutes()).slice(-2) +
-  ("0" + date.getSeconds()).slice(-2);
-
-const shorcode = process.env.MPESA_PAYBILL;
-const passkey = process.env.MPESA_PASSKEY;
-
-const password = Buffer.from(shorcode + passkey + timestamp).toString("base64");
 
 app.post('/stk', generateToken, async (req, res) => {
   try {
     const phone = req.body.phone.substring(1);
+    const amount = req.body.amount;
     const token = req.token;
 
+    const date = new Date();
+    const timestamp =
+      date.getFullYear() +
+      ("0" + (date.getMonth() + 1)).slice(-2) +
+      ("0" + date.getDate()).slice(-2) +
+      ("0" + date.getHours()).slice(-2) +
+      ("0" + date.getMinutes()).slice(-2) +
+      ("0" + date.getSeconds()).slice(-2);
+
+    const shorcode = process.env.MPESA_PAYBILL;
+    const passkey = process.env.MPESA_PASSKEY;
+    const password = Buffer.from(shorcode + passkey + timestamp).toString("base64");
+
     const response = await axios.post(
-      "https://api.safaricom.co.ke/mpesa/stkpushquery/v1/query",
+      " https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequesty",
       {
         BusinessShortCode: process.env.MPESA_PAYBILL,
         Password: password,
@@ -79,13 +71,13 @@ app.post('/stk', generateToken, async (req, res) => {
         PartyB: shorcode,
         PhoneNumber: `254${phone}`,
         TransactionType: "CustomerPayBillOnline",
-        CallBackURL: "http://mydomain.com/pat",
+        CallBackURL: "http://mydomain.com/path",
         AccountReference: `254${phone}`,
-        TransactionDesc: "test"
+        TransactionDesc: "Payment of X"
       },
       {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Basic ${token}`,
         },
       }
     );
