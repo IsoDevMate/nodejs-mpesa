@@ -1,0 +1,12 @@
+GET http://localhost:5003/token
+Authorization : Basic  
+
+###
+
+POST http://localhost:5003/stk
+Content-Type: application/json
+
+{
+  "phone": "769784198",
+  "amount": 2
+}
