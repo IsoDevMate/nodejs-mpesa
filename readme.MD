@@ -30,6 +30,52 @@ This project provides a Node.js application for integrating the MPESA payment ga
 1. Clone the repository:
 
    ```bash
+Clone the repository
    $ git clone https://github.com/IsoDevMate/nodejs-mpesa.git
-  
 
+ Navigate to the project directory: 
+   $ cd nodejs-mpesa
+
+Install the dependencies
+   $ npm install
+
+Set up environment variables:
+
+Create a .env file in the root of the project.
+Define the required environment variables in the .env file.
+
+MPESA_SECRET_KEY=your-secret-key
+MPESA_CONSUMER_KEY=your-consumer-key
+MPESA_PAYBILL=your-paybill-number
+MPESA_PASSKEY=your-passkey
+PORT=5003 
+//use your prefferd port
+
+Start the server:
+  $ npm start
+
+This will start the server on the specified port (default is 5003). You should see the following message in the console:
+
+       Server listening on 5003
+
+USAGE
+
+## You can access the server's endpoints using the following URLs:
+
+Token endpoint: http://localhost:5003/token
+STK endpoint: http://localhost:5003/stk
+Make sure to modify the URLs accordingly if you're running the server on a different host or port.
+
+DEVELOPMENT
+
+
+During development, you can use the following command to start the server with automatic restarts on file changes:
+
+$ npm run dev
+
+  
+TO RUN THE MARP.MD  CMD/CTRL + SHIFT + P to open command palette
+
+## App is still under maintainance and code reviewing
+ 
+#BuildWithAT #WeLoveNerds
