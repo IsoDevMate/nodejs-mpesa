@@ -20,15 +20,13 @@ const generateToken = async (req, res, next) => {
   try {
     const secret = process.env.MPESA_SECRET_KEY;
     const consumer = process.env.MPESA_CONSUMER_KEY;
-    const auth = Buffer.from(`${consumer}:${secret}`).toString("base64");
+    const auth = Buffer.from(`${consumer}:${secret}`).toString("Base64");
 
     const response = await axios.get('https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials', {
       headers: {
         Authorization: `Basic ${auth}`,
       },
-      params:{
-        grant_type: 'client_credentials'
-      }
+      
     });
 
     req.token = response.data.access_token;
@@ -41,7 +39,7 @@ const generateToken = async (req, res, next) => {
 
 
 
-app.post('/stk', generateToken, async (req, res) => {
+app.post('/stk', generateToken, async (req, res,next) => {
   try {
     const phone = req.body.phone.substring(1);
     const amount = req.body.amount;
@@ -66,20 +64,21 @@ app.post('/stk', generateToken, async (req, res) => {
         BusinessShortCode: process.env.MPESA_PAYBILL,
         Password: password,
         Timestamp: timestamp,
-        Amount: "1",
+        Amount: `${amount}`,
         PartyA: `254${phone}`,
         PartyB: shorcode,
         PhoneNumber: `254${phone}`,
         TransactionType: "CustomerPayBillOnline",
         CallBackURL: "http://mydomain.com/path",
         AccountReference: `254${phone}`,
-        TransactionDesc: "Payment of X"
+        TransactionDesc: "test"
       },
       {
         headers: {
           Authorization: `Basic ${token}`,
         },
-      }
+      },
+      next()
     );
 
     console.log(response.data);

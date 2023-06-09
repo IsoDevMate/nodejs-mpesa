@@ -2,7 +2,7 @@ GET http://localhost:5003/token
 Authorization : Basic  
 
 ###
-
+//generate the access token
 POST http://localhost:5003/stk
 Content-Type: application/json
 
