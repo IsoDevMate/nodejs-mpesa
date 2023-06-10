@@ -1,9 +1,9 @@
-GET http://localhost:5003/token
-Authorization : Basic  
+GET http://localhost:3000/access-token
+Authorization : Bearer 
 
 ###
 //generate the access token
-POST http://localhost:5003/stk
+POST http://localhost:3000/initiate-stk-push
 Content-Type: application/json
 
 {

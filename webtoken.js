@@ -1,3 +1,6 @@
+//just trying to learn jwt
+
+
 const jwt = require('jsonwebtoken');
 
 const user = { id: 123, username: 'barack ouma' };
