@@ -60,10 +60,10 @@ This will start the server on the specified port (default is 5003). You should s
 
 USAGE
 
-## You can access the server's endpoints using the following URLs:
+   You can access the server's endpoints using the following URLs:
 
-Token endpoint: http://localhost:5003/token
-STK endpoint: http://localhost:5003/stk
+Token endpoint: http://localhost:3000/initiate-stk-push
+STK endpoint: http://localhost:3000/sacces-token
 Make sure to modify the URLs accordingly if you're running the server on a different host or port.
 
 DEVELOPMENT
@@ -71,10 +71,15 @@ DEVELOPMENT
 
 During development, you can use the following command to start the server with automatic restarts on file changes:
 
-$ npm run dev
+$npm run dev
 
   
 TO RUN THE MARP.MD  CMD/CTRL + SHIFT + P to open command palette
+   =>open preview slide
+
+Ensure to obtain your own calback url from https://dashboard.ngrok.com/get-started/setup
+
+use it within your post request body or in your payload
 
 ## App is still under maintainance and code reviewing
  
