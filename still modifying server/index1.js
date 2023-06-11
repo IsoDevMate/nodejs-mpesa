@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+//const mongoose = require("mongoose");
 require("dotenv").config();
 const cors = require('cors');
 const fetch = require('cross-fetch');
@@ -8,6 +9,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
+const port = process.env.PORT || 5000; // Choose a port number
+app.listen(port, () => {
+  console.log(`Server listening on port ${port}`);
+});
+/*
 app.get('/token', (req, res) => {
   const secret = process.env.MPESA_SECRET_KEY;
   const consumer = process.env.MPESA_CONSUMER_KEY;
@@ -87,8 +93,5 @@ app.post('/callBack', (req, res) => {
   // Handle the callback data as needed
   res.sendStatus(200); // Send a response to acknowledge the callback
 });
+*/
 
-const port = process.env.PORT || 5000; // Choose a port number
-app.listen(port, () => {
-  console.log(`Server listening on port ${port}`);
-});
