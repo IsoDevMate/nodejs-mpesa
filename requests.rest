@@ -1,12 +1,17 @@
-GET http://localhost:3000/access-token
+GET http://localhost:8000/access-token
 Authorization : Bearer 
 
 ###
-//generate the access token
-POST http://localhost:3000/initiate-stk-push
-Content-Type: application/json
+//hit the stk post  request
+POST http://localhost:8000/stk
+ // Authorization : Bearer
+Content-Type : application/json
 
 {
-  "phone": "769784198",
-  "amount": 2
+    "amount": 1,
+    "phone": "769784198",
+    "accountReference": "test",
+    "transactionDesc": "test"
 }
+
+
