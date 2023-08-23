@@ -3,9 +3,9 @@ Authorization : Bearer
 
 ###
 //hit the stk post  request
-POST http://localhost:8000/stk
+POST http://localhost:8000/api
  // Authorization : Bearer
-Content-Type : application/json
+//Content-Type : application/json
 
 {
     "amount": 1,
