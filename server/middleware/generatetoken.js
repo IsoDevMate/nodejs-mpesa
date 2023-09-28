@@ -23,5 +23,5 @@ const getAccessToken = async (req, res, next) => {
     }
   };
 
-  module.exports={getAccessToken}
+  module.exports= getAccessToken
   

@@ -1,5 +1,5 @@
 const router =require("express").Router()
-const {getAccessToken} = require("../middleware/generatetoken")
+const { getAccessToken } = require("../middleware/generatetoken")
 const transacControllers = require("../controllers/trxncontrollers")
 
 // STEP 2: STK push

@@ -1,4 +1,4 @@
-const mongoose = require('moongose');
+/* const mongoose = require('moongose');
 
 const paymentSchema=mongoose.Schema({
     number: {type:String, required:true},
@@ -10,4 +10,4 @@ const paymentSchema=mongoose.Schema({
 
 const Payment = moongoose.model("Payment",paymentSchema)
 
-module.exports = Payment
+module.exports = Payment */

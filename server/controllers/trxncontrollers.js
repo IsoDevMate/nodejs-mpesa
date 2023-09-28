@@ -1,10 +1,24 @@
-const axios=require('axios')
-const Payment=require('../models/payment')
+/* const axios=require('axios') */
+/* const Payment=require('../models/payment') */
 
-exports.payAmount=async(req,res)=>{
-    const phone = req.body.phone.substring(1); // Formatted to 72190........
-    const amount = req.body.amount;
-  
+const { body, validationResult } = require('express-validator');
+const axios = require('axios');
+
+exports.payAmount = async (req, res) => {
+  try {
+    // Validate req.body using express-validator
+    const validationRules = [
+      body('phone').isString().isLength({ min: 1 }),
+      body('amount').isNumeric(),
+    ];
+    await Promise.all(validationRules.map(rule => rule.run(req)));
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    const { phone, amount } = req.body;
+
     const date = new Date();
     const timestamp =
       date.getFullYear() +
@@ -15,43 +29,40 @@ exports.payAmount=async(req,res)=>{
       ("0" + date.getSeconds()).slice(-2);
     const shortCode = process.env.MPESA_PAYBILL;
     const passkey = process.env.MPESA_PASSKEY;
-  
-   // const callbackurl = process.env.CALLBACK_URL;
-  
+
     const password = Buffer.from(shortCode + passkey + timestamp).toString(
       "base64"
     );
-  
-    try {
-      const response = await axios.post(
-        "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest",
-        {
-          BusinessShortCode: shortCode,
-          Password: password,
-          Timestamp: timestamp,
-          TransactionType: "CustomerPayBillOnline",
-          Amount: amount,
-          PartyA: `254${phone}`,
-          PartyB: shortCode,
-          PhoneNumber: `254${phone}`,
-          CallBackURL: process.env.CALLBACK_URL,
-          AccountReference: `254${phone}`,
-          TransactionDesc: "TEST",
+
+    const response = await axios.post(
+      process.env.PAYMENT_URL,
+      {
+        BusinessShortCode: shortCode,
+        Password: password,
+        Timestamp: timestamp,
+        TransactionType: "CustomerPayBillOnline",
+        Amount: amount,
+        PartyA: `254${phone}`,
+        PartyB: shortCode,
+        PhoneNumber: `254${phone}`,
+        CallBackURL: process.env.CALLBACK_URL,
+        AccountReference: `254${phone}`,
+        TransactionDesc: "TEST",
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
         },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          },
-        }
-      );
-  
-      res.status(200).json(response.data);
-    } catch (err) {
-      console.log(err.message);
-      res.status(500).json({ error: "Failed to initiate STK push" });
-    }
-  };
+      }
+    );
+
+    res.status(200).json(response.data);
+  } catch (err) {
+    console.log(err.message);
+    res.status(500).json({ error: "Failed to initiate STK push" });
+  }
+};
 
   exports.myCallBack = async (req, res) => {
     const callbackData = req.body;
@@ -92,3 +103,4 @@ exports.payAmount=async(req,res)=>{
     // Return a success response to mpesa
     return res.json("success");
   };
+  

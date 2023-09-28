@@ -1,17 +1,16 @@
-GET http://localhost:8000/access-token
-Authorization : Bearer 
-
+GET http://localhost:8000/api/access-token
+Authorization : Basic  ZmxZTURDR3B5U2kyQk9vVXRDaUxCNzllMjBTUjQwOFc6dE45T2V3Wm5yMlNET3FjWA
 ###
 //hit the stk post  request
-POST http://localhost:8000/api
- // Authorization : Bearer
-//Content-Type : application/json
+POST http://localhost:8000/api/stk
+
+Content-Type : application/json
 
 {
     "amount": 1,
     "phone": "769784198",
     "accountReference": "test",
-    "transactionDesc": "test"
+    "transactionDesc": "test",
 }
 
 
