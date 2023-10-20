@@ -2,7 +2,7 @@
   "name": "nodejs-mpesa",
   "version": "1.0.0",
   "description": "",
-  "main": "index1.js",
+  "main": "application.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon application.js"
@@ -18,8 +18,9 @@
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.0",
+    "mongodb": "^6.1.0",
     "mongoose": "^7.4.4",
     "node-fetch": "^3.3.1",
-    "nodemon": "^2.0.22"
+    "nodemon": "^3.0.1"
   }
 }

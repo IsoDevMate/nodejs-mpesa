@@ -2,7 +2,6 @@ const express = require("express");
 const app = express();
 require("dotenv").config();
 const cors = require("cors");
-const axios = require("axios");
 const mongoose=require('mongoose')
 const connectDB=require('./trnxDb')
 const port = process.env.PORT || 8000;

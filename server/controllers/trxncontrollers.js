@@ -34,14 +34,14 @@ exports.payAmount=async(req,res)=>{
           PartyA: `254${phone}`,
           PartyB: shortCode,
           PhoneNumber: `254${phone}`,
-          CallBackURL: process.env.CALLBACK_URL,
-          AccountReference: `254${phone}`,
+          CallBackURL:"https://0c68-41-212-65-18.ngrok-free.app/stk",
+          AccountReference: `Test`,
           TransactionDesc: "TEST",
         },
         {
           headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json'
+            Authorization: `Bearer ${req.token}}`,
+          
           },
         }
       );
@@ -49,7 +49,7 @@ exports.payAmount=async(req,res)=>{
       res.status(200).json(response.data);
     } catch (err) {
       console.log(err.message);
-      res.status(500).json({ error: "Failed to initiate STK push" });
+      res.status(500).json({ error: "Failed to make payment" });
     }
   };
 

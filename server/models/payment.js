@@ -1,4 +1,4 @@
-const mongoose = require('moongose');
+const mongoose = require('mongoose');
 
 const paymentSchema=mongoose.Schema({
     number: {type:String, required:true},
@@ -8,6 +8,6 @@ const paymentSchema=mongoose.Schema({
 {timestamp:true}
 )
 
-const Payment = moongoose.model("Payment",paymentSchema)
+const Payment = mongoose.model("Payment",paymentSchema)
 
 module.exports = Payment
