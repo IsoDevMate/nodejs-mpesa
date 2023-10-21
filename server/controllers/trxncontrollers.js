@@ -4,7 +4,9 @@ const Payment=require('../models/payment')
 exports.payAmount=async(req,res)=>{
     const phone = req.body.phone.substring(1); // Formatted to 72190........
     const amount = req.body.amount;
-  
+    if(!phone) return res.status(400).json({message:"Phone Number is required"})
+    if(!amount) return res.status(400).json({message:"Amount is required"})
+
     const date = new Date();
     const timestamp =
       date.getFullYear() +
@@ -15,13 +17,13 @@ exports.payAmount=async(req,res)=>{
       ("0" + date.getSeconds()).slice(-2);
     const shortCode = process.env.MPESA_PAYBILL;
     const passkey = process.env.MPESA_PASSKEY;
-  
+    let token = req.token;
    // const callbackurl = process.env.CALLBACK_URL;
   
     const password = Buffer.from(shortCode + passkey + timestamp).toString(
       "base64"
     );
-  
+  console.log(req.token)
     try {
       const response = await axios.post(
         "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest",
@@ -34,18 +36,17 @@ exports.payAmount=async(req,res)=>{
           PartyA: `254${phone}`,
           PartyB: shortCode,
           PhoneNumber: `254${phone}`,
-          CallBackURL:"https://0c68-41-212-65-18.ngrok-free.app/stk",
+          CallBackURL:"https://1d64-41-212-65-143.ngrok-free.app/api/myCallBack",
           AccountReference: `Test`,
           TransactionDesc: "TEST",
         },
         {
           headers: {
-            Authorization: `Bearer ${req.token}}`,
+            Authorization: `Bearer ${token}`,
           
           },
         }
       );
-  
       res.status(200).json(response.data);
     } catch (err) {
       console.log(err.message);
@@ -55,7 +56,7 @@ exports.payAmount=async(req,res)=>{
 
   exports.myCallBack = async (req, res) => {
     const callbackData = req.body;
-
+    let  mpesaCode,amount,phone,date=""
     // Log the callback data to the console
     console.log(callbackData);
     
@@ -76,19 +77,51 @@ exports.payAmount=async(req,res)=>{
   
     // Get amount
     const amountObj = body.Item.find(obj => obj.Name === 'Amount');
-    const amount = amountObj.Value
+    amount = amountObj.Value
   
+    // Get receipt number
+    const transxobj= body.Item.find(obj =>obj.Name === "TransactionDate");
+      date = transxobj.Value
+
+
     // Get Mpesa code
     const codeObj = body.Item.find(obj => obj.Name === 'MpesaReceiptNumber');
-    const mpesaCode = codeObj.Value 
+    mpesaCode = codeObj.Value 
   
     // Get phone number
     const phoneNumberObj = body.Item.find(obj => obj.Name === 'PhoneNumber');
-    const phone = phoneNumberObj.Value
+     phone = phoneNumberObj.Value
   
     // Save the variables to a file or database, etc.
-    // ...
+    try {
+    const newTransaction=await Payment.create({
+      mpesaCode,amount,phone,date 
+  })
+    console.log(ResultDesc,newTransaction)
+    return  res.status(201).json({message:`${ResultDesc}`,newTransaction})
+    } catch (error) {
+    console.log(error.message)
+     return res.send({
+      success:false,
+      message:error.message
+  });
+    
   
     // Return a success response to mpesa
     return res.json("success");
   };
+  }
+  exports.fetchAllTransactions=async(req,res)=>{
+    try {
+        const allTransactions=await Transactions.find();
+        console.log(allTransactions)
+        return res.status(200).json(allTransactions)
+
+    } catch (error) {
+        console.log(error.message)
+        return res.send({
+            success:false,
+            message:error.message
+        });
+    }
+}
