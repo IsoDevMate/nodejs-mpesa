@@ -5,7 +5,7 @@ const paymentSchema=mongoose.Schema({
     trnx_id: {type:String, required:true},
     amount: {type:String, required:true},
 },
-{timestamp:true}
+{timestamp:false}
 )
 
 const Payment = mongoose.model("Payment",paymentSchema)

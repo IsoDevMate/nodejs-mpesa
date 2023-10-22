@@ -26,6 +26,5 @@ mongoose.connection.once('open',()=>{
   app.listen(port, () => {
     console.log(`app is running at localhost:${port}`);
   });
-  
-})
+  })
 

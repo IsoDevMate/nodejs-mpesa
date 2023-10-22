@@ -97,6 +97,7 @@ exports.payAmount=async(req,res)=>{
     const newTransaction=await Payment.create({
       mpesaCode,amount,phone,date 
   })
+   await newTransaction.save(); // Save the transaction to the database
     console.log(ResultDesc,newTransaction)
     return  res.status(201).json({message:`${ResultDesc}`,newTransaction})
     } catch (error) {
@@ -105,15 +106,14 @@ exports.payAmount=async(req,res)=>{
       success:false,
       message:error.message
   });
+    }
     
-  
-    // Return a success response to mpesa
-    return res.json("success");
-  };
   }
+
+  
   exports.fetchAllTransactions=async(req,res)=>{
     try {
-        const allTransactions=await Transactions.find();
+        const allTransactions=await Payment.find();
         console.log(allTransactions)
         return res.status(200).json(allTransactions)
 
