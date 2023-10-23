@@ -37,7 +37,7 @@ exports.payAmount=async(req,res)=>{
           PartyB: shortCode,
           PhoneNumber: `254${phone}`,
           CallBackURL:"https://1d64-41-212-65-143.ngrok-free.app/api/myCallBack",
-          AccountReference: `Test`,
+          AccountReference: `${phone}`,
           TransactionDesc: "TEST",
         },
         {
@@ -97,8 +97,15 @@ exports.payAmount=async(req,res)=>{
     const newTransaction=await Payment.create({
       mpesaCode,amount,phone,date 
   })
-   await newTransaction.save(); // Save the transaction to the database
-    console.log(ResultDesc,newTransaction)
+   Payment.save() // Save the transaction to the database
+   .then((result) => {
+    console.log({message:"Transaction saved successfully",result});
+  })
+  .catch((err) => {
+    console.log(err);
+  });
+
+    console.log(ResultDesc,newTransaction);
     return  res.status(201).json({message:`${ResultDesc}`,newTransaction})
     } catch (error) {
     console.log(error.message)
@@ -125,3 +132,16 @@ exports.payAmount=async(req,res)=>{
         });
     }
 }
+
+
+
+//     console.log(callbackData);   
+//     // Get the transaction status
+//     const transaction_status = body.Item.find(
+//       (obj) => obj.Name === "ResultDesc"
+//     ).Value;
+//
+//     // Get the transaction date
+//     const transaction_date = body.Item.find(
+//       (obj) => obj.Name === "TransactionDate"
+//     ).Value;
