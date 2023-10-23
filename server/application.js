@@ -4,7 +4,7 @@ require("dotenv").config();
 const cors = require("cors");
 const mongoose=require('mongoose')
 const connectDB=require('./trnxDb')
-const port = process.env.PORT || 8000;
+const port = process.env.PORT || 5050;
 const transactions=require('./routes/transactions')
 
 app.use(express.json());
