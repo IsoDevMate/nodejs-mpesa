@@ -1,6 +1,6 @@
 const axios=require('axios')
 const Payment=require('../models/payment')
-
+const prettyjson = require('prettyjson');
 exports.payAmount=async(req,res)=>{
     const phone = req.body.phone.substring(1); // Formatted to 72190........
     const amount = req.body.amount;
@@ -55,69 +55,34 @@ exports.payAmount=async(req,res)=>{
   };
 
   exports.myCallBack = async (req, res) => {
-    const callbackData = req.body;
-    let  mpesaCode,amount,phone,date=""
-    // Log the callback data to the console
-    console.log(callbackData);
+  
+    const options = {
+      noColor: true,
+    };
+    console.log(prettyjson.render(req.body, options));
+    const {MerchantRequestID, CheckoutRequestID,ResultCode,ResultDesc,CallbackMetadata} = req.body.Body.stkCallback;
+    if (ResultCode === 0) {
     
-    // Send a response back to the M-Pesa
-    res.json({ status: 'success' });
-  
-     // Check the result code
-     const result_code = callbackData.Body.stkCallback.ResultCode;
-     if (result_code !== 0) {
-       // If the result code is not 0, there was an error
-       const error_message = callbackData.Body.stkCallback.ResultDesc;
-       const response_data = { ResultCode: result_code, ResultDesc: error_message };
-       return res.json(response_data);
-     }
+    const {Item} = CallbackMetadata;
+    console.log(Item)
+    const receiptNumber =Item.find(item =>item.Name ===  "MpesaReceiptNumber").Value;
+    const amount =Item.find(item =>item.Name ===  "Amount").Value;
+    const transactionDate =Item.find(item =>item.Name ===  "TransactionDate").Value;
+    const phoneNumber =Item.find(item =>item.Name ===  "PhoneNumber").Value;
+    
+ db(receiptNumber,amount,transactionDate,phoneNumber)
+    }
+
+res.send("ok")
+
    
-     // If the result code is 0, the transaction was completed
-     const body = req.body.Body.stkCallback.CallbackMetadata;
-  
-    // Get amount
-    const amountObj = body.Item.find(obj => obj.Name === 'Amount');
-    amount = amountObj.Value
-  
-    // Get receipt number
-    const transxobj= body.Item.find(obj =>obj.Name === "TransactionDate");
-      date = transxobj.Value
-
-
-    // Get Mpesa code
-    const codeObj = body.Item.find(obj => obj.Name === 'MpesaReceiptNumber');
-    mpesaCode = codeObj.Value 
-  
-    // Get phone number
-    const phoneNumberObj = body.Item.find(obj => obj.Name === 'PhoneNumber');
-     phone = phoneNumberObj.Value
-  
-    // Save the variables to a file or database, etc.
-    try {
-    const newTransaction=await Payment.create({
-      mpesaCode,amount,phone,date 
-  })
-   Payment.save() // Save the transaction to the database
-   .then((result) => {
-    console.log({message:"Transaction saved successfully",result});
-  })
-  .catch((err) => {
-    console.log(err);
-  });
-
-    console.log(ResultDesc,newTransaction);
-    return  res.status(201).json({message:`${ResultDesc}`,newTransaction})
-    } catch (error) {
-    console.log(error.message)
-     return res.send({
-      success:false,
-      message:error.message
-  });
+   
     }
     
-  }
-
   
+    const db=async(receiptNumber,amount,transactionDate,phoneNumber)=>{
+console.log("helloo")
+    }
   exports.fetchAllTransactions=async(req,res)=>{
     try {
         const allTransactions=await Payment.find();
