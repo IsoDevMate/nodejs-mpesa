@@ -1,5 +1,6 @@
 const axios=require('axios')
-const Payment=require('../models/payment')
+const Transaction = require('../models/payment');
+
 const prettyjson = require('prettyjson');
 exports.payAmount=async(req,res)=>{
     const phone = req.body.phone.substring(1); // Formatted to 72190........
@@ -60,6 +61,7 @@ exports.payAmount=async(req,res)=>{
       noColor: true,
     };
     console.log(prettyjson.render(req.body, options));
+    if (req.body.Body && req.body.Body.stkCallback) {
     const {MerchantRequestID, CheckoutRequestID,ResultCode,ResultDesc,CallbackMetadata} = req.body.Body.stkCallback;
     if (ResultCode === 0) {
     
@@ -70,22 +72,58 @@ exports.payAmount=async(req,res)=>{
     const transactionDate =Item.find(item =>item.Name ===  "TransactionDate").Value;
     const phoneNumber =Item.find(item =>item.Name ===  "PhoneNumber").Value;
     
- db(receiptNumber,amount,transactionDate,phoneNumber)
+    console.log(receiptNumber,amount,transactionDate,phoneNumber)
     }
+    console.log(MerchantRequestID,CheckoutRequestID,ResultCode,ResultDesc,CallbackMetadata)
+  
+    //handleunsuccesful transaction
+if (ResultCode !== 1032) {
+  const {Item} = CallbackMetadata;
+  console.log(Item)
+  const receiptNumber =Item.find(item =>item.Name ===  "MpesaReceiptNumber").Value;
+  const amount =Item.find(item =>item.Name ===  "Amount").Value;
+  const transactionDate =Item.find(item =>item.Name ===  "TransactionDate").Value;
+  const phoneNumber =Item.find(item =>item.Name ===  "PhoneNumber").Value;
 
-res.send("ok")
+  console.log(receiptNumber,amount,transactionDate,phoneNumber)
+}
+else{
+  console.log("stkCallback is missing in the request body");
+}
 
-   
-   
+    //handle timeout transaction
+  /*  const transaction = new Transaction({
+      receiptNumber,
+      amount,
+      transactionDate,
+      phoneNumber
+    })
+
+    await transaction.save();
+    console.log(transaction)
+*/
+// db(receiptNumber,amount,transactionDate,phoneNumber)
     }
     
+    
   
-    const db=async(receiptNumber,amount,transactionDate,phoneNumber)=>{
-console.log("helloo")
-    }
-  exports.fetchAllTransactions=async(req,res)=>{
+   // const db=async(receiptNumber,amount,transactionDate,phoneNumber)=>{
+//console.log("helloo")
+    
+ /* exports.fetchAllTransactions=async(req,res)=>{
     try {
-        const allTransactions=await Payment.find();
+      Transaction.find()
+      .then(transactions => res.json(transactions))
+      .catch(err => res.status(400).json('Error: '+err));
+    } catch (error) {
+      console.log(error.message)
+      return res.send({
+        success:false,
+        message:error.message
+      });
+    }*/
+     // const db=(receiptNumber,amount,transactionDate,phoneNumber)=>{
+       /* const allTransactions=await Transaction.find();
         console.log(allTransactions)
         return res.status(200).json(allTransactions)
 
@@ -95,9 +133,39 @@ console.log("helloo")
             success:false,
             message:error.message
         });
-    }
+    }*/
+}
+exports.fetchOneTransaction=async(req,res)=>{
+  try {
+    const {id}=req.params;
+    const transaction=await Transaction.findById(id);
+    console.log(transaction)
+    return res.status(200).json(transaction)
+
+} catch (error) { console.log("Transaction not completed")
+    console.log(error.message)
+    return res.send({
+        success:false,
+        message:error.message
+    });
+}
 }
 
+
+/* router.route('/').get((req,res)=>{
+  Transaction.find()
+  .then(transactions => res.json(transactions))
+  .catch(err => res.status(400).json('Error: '+err));
+});
+
+router.route('/add').post((req,res)=>{
+  const transaction = req.body;
+  const newTransaction = new Transaction(transaction);
+
+  newTransaction.save()
+  .then(()=> res.json('Transaction added!'))
+  .catch(err=> res.status(400).json('Error: '+ err));
+}); */
 
 
 //     console.log(callbackData);   
