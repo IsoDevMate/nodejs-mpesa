@@ -1,5 +1,5 @@
 const axios = require('axios');
-const jwt_decode = require('jwt-decode');
+//const jwt_decode = require('jwt-decode');
 
 exports.sendqr = async (req, res) => {
   //const { refNo: AccountReference, amount: amount } = req.body;
@@ -8,12 +8,14 @@ exports.sendqr = async (req, res) => {
   //console.log(decoded)
   const BusinessShortCode = process.env.MPESA_PAYBILL;
   let token = `${req.token}`; // Replace with your actual access token
+  let accref= req.body.phone;
+  let amt = req.body.amount;
 console.log(token)
-  const send = async (refNo, amount) => {
+ 
     const payload =[{
         MerchantName: 'Daraja Sandbox',
-        RefNo: req.body.AccountReference,
-        Amount: req.body.amount,
+        RefNo: accref,
+        Amount: amt,
         TrxCode: 'PB',
         CPI: BusinessShortCode,
         Size: '250',
@@ -22,7 +24,7 @@ console.log(token)
     try {
       const response = await axios.post(
         'https://sandbox.safaricom.co.ke/mpesa/qrcode/v1/generate',
-        payload, // Remove the extra object around payload
+         payload, // Remove the extra object around payload
         {
           headers: {
             Authorization: `Bearer  ${token}`,
@@ -37,5 +39,3 @@ console.log(token)
     }
   };
 
-  send(AccountReference, amount);
-};

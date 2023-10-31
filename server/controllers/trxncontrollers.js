@@ -55,7 +55,7 @@ exports.payAmount=async(req,res)=>{
     }
   };
 
-  exports.myCallBack = async (req, res) => {
+  exports.myCallBack = async (req, res,next) => {
   
     const options = {
       noColor: true,
@@ -85,7 +85,8 @@ if (ResultCode !== 1032) {
   const transactionDate =Item.find(item =>item.Name ===  "TransactionDate").Value;
   const phoneNumber =Item.find(item =>item.Name ===  "PhoneNumber").Value;
 
-  console.log(receiptNumber,amount,transactionDate,phoneNumber)
+  console.log(receiptNumber,amount,transactionDate,phoneNumber,CallbackMetadata)
+  next()
 }
 else{
   console.log("stkCallback is missing in the request body");
