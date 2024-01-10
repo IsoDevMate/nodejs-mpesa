@@ -37,7 +37,7 @@ exports.payAmount=async(req,res)=>{
           PartyA: `254${phone}`,
           PartyB: shortCode,
           PhoneNumber: `254${phone}`,
-          CallBackURL:"https://1d64-41-212-65-143.ngrok-free.app/api/myCallBack",
+          CallBackURL:"https://8f13-41-212-65-143.ngrok-free.app/api/myCallBack",
           AccountReference: `${phone}`,
           TransactionDesc: "TEST",
         },

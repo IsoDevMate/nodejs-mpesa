@@ -8,7 +8,6 @@ router.post("/stk",getAccessToken,transacControllers.payAmount)
 router.post("/generateqr",getAccessToken,sendqr)
 // STEP 3: Callback URL
 router.post("/myCallBack",transacControllers.myCallBack)
-
 //STEP 5:Fetch all transactions
 //router.get("/allTransactions",transacControllers.fetchAllTransactions)
 

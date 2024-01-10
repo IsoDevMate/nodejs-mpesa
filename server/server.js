@@ -18,6 +18,46 @@ connectDB();
 // apis
 app.use('/api',transactions)
 
+// push notification route 
+app.post('/save-token', (req, res) => {
+  const { token, userId } = req.body;
+  console.log(token, userId);
+  // save these details in your database and associate the token with the userId somehow,
+  // usually by adding the userId to the token table alongside the token
+const tokenSchema=new mongoose.Schema({
+  token:{
+    type:String,
+    required:true
+  },
+  userId:{
+    type:Number,
+    required:true
+  }
+})
+
+const Token=mongoose.model('Token',tokenSchema)
+
+const newToken=new Token({
+  token,
+  userId
+})
+
+
+newToken.save()
+.then((data)=>{
+
+  console.log(data)
+})
+.catch((err)=>{
+  console.log(err)
+})
+
+  res.send({ 'result': 'ok' });
+});
+  
+
+
+
 
 // test db connection
 
