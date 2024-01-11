@@ -56,6 +56,38 @@ newToken.save()
 });
   
 
+app.post('/send-notification', async(req, res) => {
+  const { title, body, icon, token } = req.body;
+  console.log(title, body, icon, token);
+  // send push notification to user
+  
+  const payload = {
+    notification: {
+      title,
+      body,
+      icon,
+    }
+  };
+  const options = {
+    TTL: 3600
+  };
+
+  const subscritions= await Token.findOne({ userId: userId });
+  console.log(subscritions)
+  
+  
+ /* admin.messaging().sendToDevice(token, payload, options)
+    .then((response) => {
+      // Response is a message ID string.
+      console.log('Successfully sent message:', response);
+    })
+    .catch((error) => {
+      console.log('Error sending message:', error);
+    });
+*/
+  res.send({ 'result': 'ok' });
+});
+
 
 
 
