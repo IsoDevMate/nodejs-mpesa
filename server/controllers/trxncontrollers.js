@@ -37,14 +37,13 @@ exports.payAmount=async(req,res)=>{
           PartyA: `254${phone}`,
           PartyB: shortCode,
           PhoneNumber: `254${phone}`,
-          CallBackURL:"https://8f13-41-212-65-143.ngrok-free.app/api/myCallBack",
+          CallBackURL:"https://us-central1-stripe-sendgrid.cloudfunctions.net/mpesaStkUrl/api/myCallBack",
           AccountReference: `${phone}`,
           TransactionDesc: "TEST",
         },
         {
           headers: {
             Authorization: `Bearer ${token}`,
-          
           },
         }
       );
@@ -66,7 +65,7 @@ exports.payAmount=async(req,res)=>{
     if (ResultCode === 0) {
     
     const {Item} = CallbackMetadata;
-    console.log(Item)
+    //console.log(Item)
     const receiptNumber =Item.find(item =>item.Name ===  "MpesaReceiptNumber").Value;
     const amount =Item.find(item =>item.Name ===  "Amount").Value;
     const transactionDate =Item.find(item =>item.Name ===  "TransactionDate").Value;

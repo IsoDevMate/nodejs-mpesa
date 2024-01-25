@@ -3,7 +3,6 @@ import React from 'react'
 const App = () => {
   const [token, setToken] = React.useState(null)
 
-
   
 importScripts("https://www.gstatic.com/firebasejs/5.9.4/firebase-app.js");
 importScripts("https://www.gstatic.com/firebasejs/5.9.4/firebase-messaging.js");
