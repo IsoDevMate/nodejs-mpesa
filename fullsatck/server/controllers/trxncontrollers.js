@@ -37,7 +37,7 @@ exports.payAmount=async(req,res)=>{
           PartyA: `254${phone}`,
           PartyB: shortCode,
           PhoneNumber: `254${phone}`,
-          CallBackURL:"https://us-central1-stripe-sendgrid.cloudfunctions.net/mpesaStkUrl/api/myCallBack",
+          CallBackURL:process.env.CALLBACKURL || "https://us-central1-stripe-sendgrid.cloudfunctions.net/mpesaStkUrl/api/myCallBack",
           AccountReference: `${phone}`,
           TransactionDesc: "TEST",
         },

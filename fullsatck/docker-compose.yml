@@ -1,22 +1,29 @@
 
 version: '3'
 services:
-  playground-web-db:
+  mongo:
     image: mongo:4.2.2
     environment:
-      MONGO_INITDB_DATABASE: playground-web
-    ports:
-      - 27017:27017
-  playground-web-frontend:
-    image: playground-web-frontend:latest
+      
+  
+ # playground-web-frontend:
+ #  image: playground-web-frontend:latest
+ #  environment:
+ #  PORT: 3000
+ #  PROXY_API: http://playground-web-backend:8080/
+ #  ports:
+ #   - 3000:3000
+  backendaraja:
+    container_name: darajaimage
+    depends_on:
+      - mongo
+    image: backendaraja:latest
+    restart: always
+    env_file:
+      - .env
     environment:
-      PORT: 3000
-      PROXY_API: http://playground-web-backend:8080/
+      DATABASE_URI: $DATABASE_URI
     ports:
-      - 3000:3000
-  playground-web-backend:
-    image: playground-web-backend:latest
-    environment:
-      MONGODB_URI: mongodb://playground-web-db:27017/playground-web
-    ports:
-      - 8080:8080
+      - 5050:5050
+    networks:
+      -daraj-networks  
