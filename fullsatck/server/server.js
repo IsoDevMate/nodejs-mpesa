@@ -11,12 +11,15 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
-
 // connect Database
 connectDB(); 
 
 // apis
 app.use('/api',transactions)
+
+app.get("/", (req, res) => {
+  res.send("Hello World");
+});
 
 // push notification route 
 app.post('/save-token', (req, res) => {

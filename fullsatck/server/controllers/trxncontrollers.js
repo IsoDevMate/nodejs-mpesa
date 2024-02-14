@@ -37,7 +37,7 @@ exports.payAmount=async(req,res)=>{
           PartyA: `254${phone}`,
           PartyB: shortCode,
           PhoneNumber: `254${phone}`,
-          CallBackURL:process.env.CALLBACKURL || "https://us-central1-stripe-sendgrid.cloudfunctions.net/mpesaStkUrl/api/myCallBack",
+          CallBackURL:process.env.CALLBACKURL || "https://96n9704p-5050.uks1.devtunnels.ms/api/myCallBack",	
           AccountReference: `${phone}`,
           TransactionDesc: "TEST",
         },
@@ -53,6 +53,55 @@ exports.payAmount=async(req,res)=>{
       res.status(500).json({ error: "Failed to make payment" });
     }
   };
+
+  exports.myCallBack = async (req, res) => {
+    try {
+        const options = {
+            noColor: true,
+        };
+        console.log(prettyjson.render(req.body, options));
+        if (req.body.Body && req.body.Body.stkCallback) {
+            const {MerchantRequestID, CheckoutRequestID, ResultCode, ResultDesc, CallbackMetadata} = req.body.Body.stkCallback;
+            if (!CallbackMetadata) {
+              console.log(req.body.Body.stkCallback.ResultDesc);
+              res.status(200).json("ok");
+              return;
+            }
+          
+            if (ResultCode === 0) {
+                const {Item} = CallbackMetadata;
+                const receiptNumber = Item.find(item => item.Name === "MpesaReceiptNumber").Value;
+                const amount = Item.find(item => item.Name === "Amount").Value;
+                const transactionDate = Item.find(item => item.Name === "TransactionDate").Value;
+                const phoneNumber = Item.find(item => item.Name === "PhoneNumber").Value;
+
+                console.log("-".repeat(20), " OUTPUT IN THE CALLBACK ", "-".repeat(20))
+                console.log(`
+                    MerchantRequestID : ${MerchantRequestID},
+                    CheckoutRequestID: ${CheckoutRequestID},
+                    ResultCode: ${ResultCode},
+                    ResultDesc: ${ResultDesc},
+                    PhoneNumber : ${phoneNumber},
+                    Amount: ${amount}, 
+                    MpesaReceiptNumber: ${receiptNumber},
+                    TransactionDate : ${transactionDate}
+                `)
+            }
+            else {
+                console.log("stkCallback is missing in the request body");
+            }
+        }
+    } catch (e) {
+        console.error("Error while trying to update LipaNaMpesa details from the callback", e)
+        res.status(503).send({
+            message: "Something went wrong with the callback",
+            error: e.message
+        })
+    }
+}
+
+  
+  /*
 
   exports.myCallBack = async (req, res) => {
   
@@ -102,7 +151,7 @@ else{
     console.log(transaction)
 */
 // db(receiptNumber,amount,transactionDate,phoneNumber)
-    }
+   // }
     
     
   
@@ -132,8 +181,9 @@ else{
             success:false,
             message:error.message
         });
-    }*/
-}
+    }
+}  
+*/
 exports.fetchOneTransaction=async(req,res)=>{
   try {
     const {id}=req.params;
