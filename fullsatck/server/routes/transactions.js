@@ -9,8 +9,8 @@ router.post("/generateqr",getAccessToken,sendqr)
 // STEP 3: Callback URL
 router.post("/myCallBack",transacControllers.myCallBack)
 //STEP 5:Fetch all transactions
-//router.get("/allTransactions",transacControllers.fetchAllTransactions)
-
+router.get("/allTransactions",transacControllers.fetchAllTransactions)
+router.post("/handler",transacControllers.handler)
 //STEP 6:Fetch one transaction
 router.get("/oneTransaction/:id",transacControllers.fetchOneTransaction)
 

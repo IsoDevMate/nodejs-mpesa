@@ -37,7 +37,7 @@ exports.payAmount=async(req,res)=>{
           PartyA: `254${phone}`,
           PartyB: shortCode,
           PhoneNumber: `254${phone}`,
-          CallBackURL:process.env.CALLBACKURL || "https://96n9704p-5050.uks1.devtunnels.ms/api/myCallBack",	
+          CallBackURL:process.env.CALLBACKURL || "https://96n9704p-5050.uks1.devtunnels.ms",	
           AccountReference: `${phone}`,
           TransactionDesc: "TEST",
         },
@@ -54,51 +54,72 @@ exports.payAmount=async(req,res)=>{
     }
   };
 
+  exports.handler = async (req, res) => {
+      console.log(req.body.Body.stkCallback);
+    };
+  
   exports.myCallBack = async (req, res) => {
     try {
         const options = {
             noColor: true,
         };
-        console.log(prettyjson.render(req.body, options));
+     //   console.log(prettyjson.render(req.body, options));
         if (req.body.Body && req.body.Body.stkCallback) {
-            const {MerchantRequestID, CheckoutRequestID, ResultCode, ResultDesc, CallbackMetadata} = req.body.Body.stkCallback;
+          const {
+            MerchantRequestID,
+            CheckoutRequestID,
+            ResultCode,
+            ResultDesc,
+            CallbackMetadata
+                 }   = req.body.Body.stkCallback
             if (!CallbackMetadata) {
-              console.log(req.body.Body.stkCallback.ResultDesc);
+              console.log(ResultDesc);
               res.status(200).json("ok");
               return;
             }
-          
-            if (ResultCode === 0) {
-                const {Item} = CallbackMetadata;
-                const receiptNumber = Item.find(item => item.Name === "MpesaReceiptNumber").Value;
-                const amount = Item.find(item => item.Name === "Amount").Value;
-                const transactionDate = Item.find(item => item.Name === "TransactionDate").Value;
-                const phoneNumber = Item.find(item => item.Name === "PhoneNumber").Value;
+  //     get the meta data from the meta
+      const meta = Object.values(await CallbackMetadata.Item)
+      const PhoneNumber = meta.find(o => o.Name === 'PhoneNumber').Value.toString()
+      const Amount = meta.find(o => o.Name === 'Amount').Value.toString()
+      const MpesaReceiptNumber = meta.find(o => o.Name === 'MpesaReceiptNumber').Value.toString()
+      const TransactionDate = meta.find(o => o.Name === 'TransactionDate').Value.toString()
 
-                console.log("-".repeat(20), " OUTPUT IN THE CALLBACK ", "-".repeat(20))
-                console.log(`
-                    MerchantRequestID : ${MerchantRequestID},
-                    CheckoutRequestID: ${CheckoutRequestID},
-                    ResultCode: ${ResultCode},
-                    ResultDesc: ${ResultDesc},
-                    PhoneNumber : ${phoneNumber},
-                    Amount: ${amount}, 
-                    MpesaReceiptNumber: ${receiptNumber},
-                    TransactionDate : ${transactionDate}
-                `)
-            }
-            else {
-                console.log("stkCallback is missing in the request body");
-            }
-        }
-    } catch (e) {
-        console.error("Error while trying to update LipaNaMpesa details from the callback", e)
-        res.status(503).send({
-            message: "Something went wrong with the callback",
-            error: e.message
-        })
-    }
+      // do something with the data
+      console.log("-".repeat(20)," OUTPUT IN THE CALLBACK ", "-".repeat(20))
+      console.log(`
+         
+          MerchantRequestID : ${MerchantRequestID},
+          CheckoutRequestID: ${CheckoutRequestID},
+          ResultCode: ${ResultCode},
+          ResultDesc: ${ResultDesc},
+          PhoneNumber : ${PhoneNumber},
+          Amount: ${Amount}, 
+          MpesaReceiptNumber: ${MpesaReceiptNumber},
+          TransactionDate : ${TransactionDate}
+      `)
+
+      res.json({
+          MerchantRequestID,
+          CheckoutRequestID,
+          ResultCode,
+          ResultDesc,
+          PhoneNumber,
+          Amount,
+          MpesaReceiptNumber,
+          TransactionDate
+      })
+
+  }
 }
+  catch (e) {
+      console.error("Error while trying to update LipaNaMpesa details from the callback",e)
+      res.status(503).send({
+          message:"Something went wrong with the callback",
+          error : e.message
+      })
+  }
+}
+
 
   
   /*
@@ -158,18 +179,26 @@ else{
    // const db=async(receiptNumber,amount,transactionDate,phoneNumber)=>{
 //console.log("helloo")
     
- /* exports.fetchAllTransactions=async(req,res)=>{
+  exports.fetchAllTransactions=async(req,res)=>{
     try {
-      Transaction.find()
+      Transaction.find(
+        {receiptNumber:req.body.receiptNumber,
+        amount:req.body.amount,
+        transactionDate:req.body.transactionDate,
+        phoneNumber:req.body.phoneNumber}
+      )
       .then(transactions => res.json(transactions))
       .catch(err => res.status(400).json('Error: '+err));
+
+      console.log(transactions)
     } catch (error) {
       console.log(error.message)
       return res.send({
         success:false,
         message:error.message
       });
-    }*/
+    }
+  }
      // const db=(receiptNumber,amount,transactionDate,phoneNumber)=>{
        /* const allTransactions=await Transaction.find();
         console.log(allTransactions)
