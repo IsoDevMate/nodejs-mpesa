@@ -1,6 +1,6 @@
 const axios=require('axios')
-const Transaction = require('../models/payment');
-
+//const Transaction = require('../models/payment');
+const LipaNaMpesaTransaction = require('../models/payment');
 const prettyjson = require('prettyjson');
 exports.payAmount=async(req,res)=>{
     const phone = req.body.phone.substring(1); // Formatted to 72190........
@@ -24,7 +24,7 @@ exports.payAmount=async(req,res)=>{
     const password = Buffer.from(shortCode + passkey + timestamp).toString(
       "base64"
     );
-  console.log(req.token)
+    console.log(req.token)
     try {
       const response = await axios.post(
         "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest",
@@ -37,7 +37,7 @@ exports.payAmount=async(req,res)=>{
           PartyA: `254${phone}`,
           PartyB: shortCode,
           PhoneNumber: `254${phone}`,
-          CallBackURL:process.env.CALLBACKURL || "https://96n9704p-5050.uks1.devtunnels.ms",	
+          CallBackURL:process.env.CALLBACKURL || "https://96n9704p-5050.uks1.devtunnels.ms/",	
           AccountReference: `${phone}`,
           TransactionDesc: "TEST",
         },
@@ -47,16 +47,26 @@ exports.payAmount=async(req,res)=>{
           },
         }
       );
+      //mpesareceiptnumber  to be update from the mycallBack function
+    /*  if (response.data && response.data.ResponseCode === "0") {
+        const newTransaction = new LipaNaMpesaTransaction({
+            Amount: amount,
+            MpesaReceiptNumber: await response.data.MpesaReceiptNumber,
+            TransactionDate: timestamp,
+            PhoneNumber: phone 
+        });
+        await newTransaction.save();
+    }
+    */
       res.status(200).json(response.data);
     } catch (err) {
       console.log(err.message);
       res.status(500).json({ error: "Failed to make payment" });
     }
   };
-
   exports.handler = async (req, res) => {
       console.log(req.body.Body.stkCallback);
-    };
+   };
   
   exports.myCallBack = async (req, res) => {
     try {
@@ -98,29 +108,77 @@ exports.payAmount=async(req,res)=>{
           TransactionDate : ${TransactionDate}
       `)
 
-      res.json({
-          MerchantRequestID,
-          CheckoutRequestID,
-          ResultCode,
-          ResultDesc,
-          PhoneNumber,
-          Amount,
-          MpesaReceiptNumber,
-          TransactionDate
-      })
+      const newTransaction = new LipaNaMpesaTransaction({
+        Amount: Amount,
+        MpesaReceiptNumber: MpesaReceiptNumber,
+        TransactionDate: TransactionDate,
+        PhoneNumber: PhoneNumber
+    });
 
-  }
+    // Save the transaction to the database
+    await newTransaction.save();
+
+    // Send response
+    res.json({
+        MerchantRequestID,
+        CheckoutRequestID,
+        ResultCode,
+        ResultDesc,
+        PhoneNumber,
+        Amount,
+        MpesaReceiptNumber,
+        TransactionDate
+    });
+
+   }} catch (e) {
+    console.error("Error while trying to update LipaNaMpesa details from the callback", e);
+    res.status(503).send({
+        message: "Something went wrong with the callback",
+        error: e.message
+    });
 }
-  catch (e) {
-      console.error("Error while trying to update LipaNaMpesa details from the callback",e)
-      res.status(503).send({
-          message:"Something went wrong with the callback",
-          error : e.message
-      })
-  }
 }
 
+/*exports.stkpushQuery=async (req, res) => {
+  const CheckoutRequestID = req.body.CheckoutRequestID;
 
+  const date = new Date();
+  const timestamp =
+    date.getFullYear() +
+    ("0" + (date.getMonth() + 1)).slice(-2) +
+    ("0" + date.getDate()).slice(-2) +
+    ("0" + date.getHours()).slice(-2) +
+    ("0" + date.getMinutes()).slice(-2) +
+    ("0" + date.getSeconds()).slice(-2);
+  const shortCode = process.env.MPESA_PAYBILL
+  const passkey = process.env.MPESA_PASSKEY
+let token = req.token;
+console.log(token)
+  const password = Buffer.from(shortCode + passkey + timestamp).toString(
+    "base64"
+  );
+
+  try {
+    const response = await axios.post(
+      "https://sandbox.safaricom.co.ke/mpesa/stkpushquery/v1/query",
+      {
+        BusinessShortCode: shortCode,
+        Password: password,
+        Timestamp: timestamp,
+        CheckoutRequestID: CheckoutRequestID,
+      },
+      {
+        headers: {
+          Authorization: Bearer ${token},
+        },
+      }
+    );
+    res.status(200).json(response.data);
+  } catch (err) {
+    console.log(err.message);
+    res.status(400).json({ error: "Failed to query STK push" });
+  }
+}*/
   
   /*
 
@@ -179,26 +237,27 @@ else{
    // const db=async(receiptNumber,amount,transactionDate,phoneNumber)=>{
 //console.log("helloo")
     
-  exports.fetchAllTransactions=async(req,res)=>{
-    try {
-      Transaction.find(
-        {receiptNumber:req.body.receiptNumber,
-        amount:req.body.amount,
-        transactionDate:req.body.transactionDate,
-        phoneNumber:req.body.phoneNumber}
-      )
-      .then(transactions => res.json(transactions))
-      .catch(err => res.status(400).json('Error: '+err));
+exports.fetchAllTransactions = async (req, res) => {
+  try {
+      const transactions = await LipaNaMpesaTransaction.find({
+          receiptNumber: req.body.receiptNumber,
+          amount: req.body.amount,
+          transactionDate: req.body.transactionDate,
+          phoneNumber: req.body.phoneNumber
+      }).exec();
 
-      console.log(transactions)
-    } catch (error) {
-      console.log(error.message)
-      return res.send({
-        success:false,
-        message:error.message
+      console.log(transactions); 
+
+      res.json(transactions);
+  } catch (error) {
+      console.log(error.message);
+      return res.status(400).json({
+          success: false,
+          message: error.message
       });
-    }
   }
+};
+
      // const db=(receiptNumber,amount,transactionDate,phoneNumber)=>{
        /* const allTransactions=await Transaction.find();
         console.log(allTransactions)
@@ -216,7 +275,7 @@ else{
 exports.fetchOneTransaction=async(req,res)=>{
   try {
     const {id}=req.params;
-    const transaction=await Transaction.findById(id);
+    const transaction=await LipaNaMpesaTransaction.findById(id);
     console.log(transaction)
     return res.status(200).json(transaction)
 
