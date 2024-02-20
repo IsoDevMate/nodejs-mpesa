@@ -264,21 +264,21 @@ exports.fetchAllTransactions = async (req, res) => {
     }
 }  
 */
-exports.fetchOneTransaction=async(req,res)=>{
+exports.fetchOneTransaction = async (req, res) => {
   try {
-    const {id}=req.params;
-    const transaction=await LipaNaMpesaTransaction.findById(id);
-    console.log(transaction)
-    return res.status(200).json(transaction)
+    const { id } = req.params;
+    const transaction = await LipaNaMpesaTransaction.findById(id);
+    console.log(transaction);
+    if (!transaction) {
+      return res.status(404).json({ success: false, message: "Transaction not found" });
+    }
+    return res.status(200).json(transaction);
+  } catch (error) {
+    console.log("Error fetching transaction:", error.message);
+    return res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
 
-} catch (error) { console.log("Transaction not completed")
-    console.log(error.message)
-    return res.send({
-        success:false,
-        message:error.message
-    });
-}
-}
 
 
 /* router.route('/').get((req,res)=>{
