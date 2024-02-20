@@ -64,9 +64,13 @@ exports.payAmount=async(req,res)=>{
       res.status(500).json({ error: "Failed to make payment" });
     }
   };
+
   exports.handler = async (req, res) => {
       console.log(req.body.Body.stkCallback);
    };
+
+
+
   
   exports.myCallBack = async (req, res) => {
     try {
@@ -169,7 +173,7 @@ console.log(token)
       },
       {
         headers: {
-          Authorization: Bearer ${token},
+          Authorization: `Bearer ${token}`,
         },
       }
     );
