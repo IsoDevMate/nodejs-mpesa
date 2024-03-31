@@ -65,9 +65,9 @@ exports.payAmount=async(req,res)=>{
     }
   };
 
- // exports.handler = async (req, res) => {
-  //    console.log(req.body.Body.stkCallback);
- //   };
+  exports.handler = async (req, res) => {
+    console.log(req.body.Body.stkCallback);
+    };
   
   exports.myCallBack = async (req, res) => {
     try {
