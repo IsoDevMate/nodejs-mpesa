@@ -63,7 +63,6 @@ app.post('/send-notification', async (req, res) => {
 
   try {
     const subscriptions = await Token.find({ userId });
-
     const tokens = subscriptions.map((subscription) => subscription.token);
 
     const payload = {
@@ -75,32 +74,37 @@ app.post('/send-notification', async (req, res) => {
 
     const options = {
       priority: 'high',
-      timeToLive: 60 * 60 * 24, 
+      timeToLive: 60 * 60 * 24,
     };
 
-
     const response = await admin.messaging().sendToDevice(tokens, payload, options);
-    response.results.forEach((result, index) => {
-    const error = result.error;
-    if (error) {
-      console.error('Failure:', error.code);
-       if (error.code === 'messaging/registration-token-not-registered') {
-      // Remove the invalid token from your database
-      const invalidToken = tokens[index];
-      Token
-        .deleteOne({ token: invalidToken })
-        .then((data) => {
-          console.log(data);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+    let hasFailure = false;
 
-    console.log('Successfully sent message:', response);
-    res.status(200).json({ message: 'Notification sent successfully' });
-  }
-}
-  });
+    response.results.forEach((result, index) => {
+      const error = result.error;
+      if (error) {
+        console.error('Failure:', error.code);
+        if (error.code === 'messaging/registration-token-not-registered') {
+          // Remove the invalid token from your database
+          const invalidToken = tokens[index];
+          Token.deleteOne({ token: invalidToken })
+            .then((data) => {
+              console.log(`Deleted invalid token: ${invalidToken}`);
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+          hasFailure = true;
+        }
+      }
+    });
+
+    if (hasFailure) {
+      res.status(200).json({ message: 'Notification sent, but some tokens were invalid' });
+    } else {
+      console.log('Successfully sent message:', response);
+      res.status(200).json({ message: 'Notification sent successfully' });
+    }
   } catch (error) {
     console.log('Error sending message:', error);
     res.status(500).json({ error: 'Failed to send notification' });
