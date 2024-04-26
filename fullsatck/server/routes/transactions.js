@@ -14,7 +14,7 @@ router.get("/allTransactions",transacControllers.fetchAllTransactions)
 router.post("/handler",transacControllers.handler)
 //STEP 6:Fetch one transaction
 router.get("/oneTransaction/:id",transacControllers.fetchOneTransaction)
-router.post("/stkpushquery",getAccessToken,transacControllers.stkpushQuery)
+router.post("stkpushquery/",getAccessToken,transacControllers.stkpushQuery)
 
 
 module.exports=router;

@@ -3,6 +3,10 @@ const axios=require('axios')
 const LipaNaMpesaTransaction = require('../models/payment');
 const prettyjson = require('prettyjson');
 exports.payAmount=async(req,res)=>{
+   console.log('Request Body:', req.body);
+   if (!req.body.phone) {
+    return res.status(400).json({ error: 'Phone number is missing in the request body' });
+  }
     const phone = req.body.phone.substring(1); // Formatted to 72190........
     const amount = req.body.amount;
     if(!phone) return res.status(400).json({message:"Phone Number is required"})
