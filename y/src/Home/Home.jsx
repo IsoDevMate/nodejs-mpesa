@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
 const Container = styled.div`
@@ -58,7 +58,7 @@ const Home = () => {
       try {
         const payload = {
           amount: amount,
-          phoneNumber: number,
+          phone: number, 
         };
   
         const url = 'http://localhost:5050/api/stk';
