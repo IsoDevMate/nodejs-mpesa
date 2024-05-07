@@ -15,9 +15,9 @@ const Products = () => {
   const [cart, setCart] = useState([]);
 
   const products = [
-    { id: 1, name: 'Product 1', price: 350 },
-    { id: 2, name: 'Product 2', price: 350 },
-    // Add more products as needed
+    { id: 1, name: 'client_secret', price: 5},
+    { id: 2, name: 'Apikey', price: 2 },
+   
   ];
 
   const handleAddToCart = (product, quantity) => {
@@ -58,7 +58,6 @@ const CheckoutButtons = styled.button`
 
 const CheckoutButton = ({ cart }) => {
   const handleCheckout = () => {
-    // Redirect to the checkout page with the cart data
     window.location.href = `/checkout?cart=${JSON.stringify(cart)}`;
   };
 
