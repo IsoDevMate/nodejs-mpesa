@@ -16,5 +16,4 @@ router.post("/handler",transacControllers.handler)
 router.get("/oneTransaction/:id",transacControllers.fetchOneTransaction)
 router.post("stkpushquery/",getAccessToken,transacControllers.stkpushQuery)
 
-
 module.exports=router;
