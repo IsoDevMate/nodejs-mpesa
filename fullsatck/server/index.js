@@ -56,7 +56,6 @@ newToken
 //res.send({ 'result': 'ok' });
 });
 
-
 app.post('/send-notification', async (req, res) => {
   const { title, body, userId } = req.body;
   console.log(title, body, userId);
