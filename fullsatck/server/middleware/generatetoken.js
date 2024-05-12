@@ -4,6 +4,7 @@ const getAccessToken = async (req, res, next) => {
     const key = process.env.MPESA_CONSUMER_KEY;
     const secret = process.env.MPESA_CONSUMER_SECRET;
     const auth = Buffer.from(`${key}:${secret}`).toString("base64");
+    console.log("here are the auths",auth);
   
     try {
       const response = await axios.get(
@@ -25,4 +26,3 @@ const getAccessToken = async (req, res, next) => {
   };
 
   module.exports={getAccessToken}
-  

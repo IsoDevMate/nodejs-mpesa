@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "native-functions-dd65b",
+  "private_key_id": "b2666c803eb1c527651c73fb6dcf193b5ceaa5c3",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCvp+Xmah/LlLXm\nV+xjH/ajHhgWwrpfe6ZXrSx+PHESlFqthXhzEnDFnW/p0fZNTwkB/wHWJ0eI5VRF\neyYfqHIhbJ7uhBy9ZhCjadZNw6OT8k17UL+kupBeGtD4j0d5V85zjO31LP6i2Njg\n/83ZPrjOP2chORkNBVf3HWyiKrUB1PvW5vzWF3lbNtSAjXS9dNPTKiN5590nLWMx\nib3ct75lJzPDU6Fp87n50jPL1whjr15AnwoRIKLhetrBQL38tEw+BeWjJZKvDKzO\nz3I4pxsPqzV9g3Au2A+vn/mSv0FF7lYjBU6pMGpIHHcnBrLxFktT4B5+PZayZikt\ndCBkREVVAgMBAAECggEAAwcsK6VrMGV7IEImQUwxAn1XkXbgYxp80tiZooB0u4sC\nqCibm7I27vUok3mK2yjQYTAt7izlqwq3Ae6eSN/svb5DXB27aBltEoAV0Wfct0Vv\nR/+rmhGcQP8J2KsRopocpTnJ9VbF+fUugexu9j6CTY3iv3wePi74JfqkH4SIc8Ra\niUfDGYDYBQ/tka/ZZ9ZT0TTxTPGDVO/p0uFOTjnOQcb95U1t8slVL+0p7GmamBGq\nScfcZzWhgz3Bu/E6XlQ8ZGHzfbNXL5m7FcVLrMSu7yaoUTlTpnrsSN9VSH0Nb+qx\n8P/9kLrOWKRcIS7EwmeJkhqw/QumylUYr6ND+uZfOQKBgQDurxSRiMiovkZs8fVc\nYlncLYvhrb7b5KaRvO9LmSp77Syd7BxlJvIqhfiduEuntma6edSIIHFOVTiWopkB\nrUioB16UiY3to+edSr76zz7ZT7DQ6mOXMj2RlZWIg4rBs9MFulJ7P4rAPHvF8VPH\nhW0Pm24AeoxqaWq66WSExDXsvQKBgQC8Zj0spNgvaMbLPARx7vcENyYocbubz8Fk\nOZoB+hvLUMcNMQuO698uEdK1f+i8IIHU53GyIhNhRDIu4zz+aFKb2++v5a7Ik4T7\nsCoyn+E296Tb5+V4YtbvOIxcXbPAGgk35GFZSF3CMKFA+iBhRPVuyVMb3V17Xyho\nCbkFPUrgeQKBgBqlCNLGRkAwHYSD7jQF9qoRm4/x6WB6we16/eueiZOUAmsOtIzG\nMDp3Ai35KNjsD8O5XfRkSsHH2a1XMWVyhq3bRL+oK2Pf7Dcu5Oryv71anA52W+/A\n+AaMgEjhBlhhTqlRB2wix8Z1+gs6yXN4fZhEbZ84DvzCD9wVudboYGyxAoGBAK/g\njgloVn1jxfmirM+j8ywXQ+ML0cVyXKrw7yobT+ktHrXc7FpfLjk24EsZ/q3pdurH\nqadPEmKCJIsLDjy+LShdWNQPimyq8sF3wt0BzmDfLSMxyFHri5VFaBsuSojyhVqN\nNKgB261WcqNTHflQRANJpPFlZUiwG+uL8BLJFmaZAoGABKVeid6YJXkyiGwEPoaW\n23NG/R7HLDGBKmSSPAHkXO4P3k9gX4sIS9SVsrOg/Nn0jg0U8VX7xRR4Nur/gOmP\n+AWDrqrL2JWeRt/CvY3Ap/jbqtILOc9y+IESZnGgvlM++3M1lX+rNmIj3wmLs9RG\nIZP73QvDtRYVDyqB7/iejYI=\n-----END PRIVATE KEY-----\n",
+  "client_email": "cloud-messaging-admin@native-functions-dd65b.iam.gserviceaccount.com",
+  "client_id": "101311742817976524274",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/cloud-messaging-admin%40native-functions-dd65b.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

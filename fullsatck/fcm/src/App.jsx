@@ -1,35 +1,23 @@
 import React from 'react'
-
+import  {messaging} from '../firebase'
 const App = () => {
   const [token, setToken] = React.useState(null)
-
-  
-importScripts("https://www.gstatic.com/firebasejs/5.9.4/firebase-app.js");
-importScripts("https://www.gstatic.com/firebasejs/5.9.4/firebase-messaging.js");
-
-
-const firebaseConfig = {
-  //  apiKey: "AIzaSyCpd0Mwy_BudiA-z3KMsfrqw3nt3Gy7h6M",
-  //  authDomain: "native-functions-dd65b.firebaseapp.com",
-  //  projectId: "native-functions-dd65b",
- //   storageBucket: "native-functions-dd65b.appspot.com",
-    messagingSenderId: "773232537571",
-   // appId: "1:773232537571:web:68ab00cedad20c66397ad6"
-  };
-
-  // Initialize Firebase
-firebase.initializeApp(firebaseConfig);
-const messaging = firebase.messaging();
-
-db.settings(settings);
-
+/*
+export const app = initializeApp(firebaseConfig);
+  let messaging
+  if (typeof window !== 'undefined'){
+    messaging = getMessaging(app);
+  }
+  export {messaging}
+*/
 // Get registration token. Initially this makes a network call, once retrieved
 // subsequent calls to getToken will return from cache.
 
 messaging.getToken({ vapidKey: 'BCoO1P9J8gNhj1KjSRxgFW88XeIVjgCG2y7YtzkRQP-uprmlqtjwveYHnJWEQj52MYzqQuJ-ddXxcfQkcLqAvdw' }).then((currentToken) => {
+  console.log(currentToken)
     if (currentToken) {
           // Send the token to your server and update the UI if necessary
-    fetch('/save-token', {
+    fetch('http:localhost:5050/save-token', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -50,11 +38,9 @@ messaging.getToken({ vapidKey: 'BCoO1P9J8gNhj1KjSRxgFW88XeIVjgCG2y7YtzkRQP-uprml
     } else {
       // Show permission request UI
       console.log('No registration token available. Request permission to generate one.');
-    
     }
   }).catch((err) => {
     console.log('An error occurred while retrieving token. ', err);
-   
   });
 
   //when the app is in the background
@@ -63,6 +49,7 @@ messaging.getToken({ vapidKey: 'BCoO1P9J8gNhj1KjSRxgFW88XeIVjgCG2y7YtzkRQP-uprml
     var obj = JSON.parse(payload.data.notification);
     var objTitle = obj.title;
     const notificationOptions = {
+      title: objTitle,
       body: obj.body,
       icon: obj.icon,
     };
@@ -120,6 +107,9 @@ messaging.getToken({ vapidKey: 'BCoO1P9J8gNhj1KjSRxgFW88XeIVjgCG2y7YtzkRQP-uprml
   return (
     <div>
       <h1>FCM</h1>
+      <p>Token: {token}</p>
+      <button onClick={sendNotification}>Send Notification</button>
+      
     </div>
   )
 }

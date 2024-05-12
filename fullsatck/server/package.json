@@ -2,11 +2,9 @@
   "name": "nodejs-mpesa",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon server.js"
-    
+    "start": "node index.js"
   },
   "keywords": [],
   "author": "",
@@ -18,6 +16,7 @@
     "cross-fetch": "^3.1.6",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
+    "firebase-admin": "^12.0.0",
     "jsonwebtoken": "^9.0.0",
     "jwt-decode": "^3.1.2",
     "mongodb": "^6.1.0",

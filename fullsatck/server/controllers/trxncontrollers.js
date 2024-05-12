@@ -2,72 +2,80 @@ const axios=require('axios')
 //const Transaction = require('../models/payment');
 const LipaNaMpesaTransaction = require('../models/payment');
 const prettyjson = require('prettyjson');
-exports.payAmount=async(req,res)=>{
-    const phone = req.body.phone.substring(1); // Formatted to 72190........
-    const amount = req.body.amount;
-    if(!phone) return res.status(400).json({message:"Phone Number is required"})
-    if(!amount) return res.status(400).json({message:"Amount is required"})
+exports.payAmount = async (req, res) => {
+  console.log('Request Body:', req.body);
+  if (!req.body.phone) {
+    return res.status(400).json({ error: 'Phone number is missing in the request body' });
+  }
+  const phone = req.body.phone.substring(1); // Formatted to 72190........
+  const amount = req.body.amount;
+  if (!phone) return res.status(400).json({ message: "Phone Number is required" });
+  if (!amount) return res.status(400).json({ message: "Amount is required" });
 
-    const date = new Date();
-    const timestamp =
-      date.getFullYear() +
-      ("0" + (date.getMonth() + 1)).slice(-2) +
-      ("0" + date.getDate()).slice(-2) +
-      ("0" + date.getHours()).slice(-2) +
-      ("0" + date.getMinutes()).slice(-2) +
-      ("0" + date.getSeconds()).slice(-2);
-    const shortCode = process.env.MPESA_PAYBILL;
-    const passkey = process.env.MPESA_PASSKEY;
-    let token = req.token;
-   // const callbackurl = process.env.CALLBACK_URL;
-  
-    const password = Buffer.from(shortCode + passkey + timestamp).toString(
-      "base64"
-    );
-  console.log(req.token)
-    try {
-      const response = await axios.post(
-        "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest",
-        {
-          BusinessShortCode: shortCode,
-          Password: password,
-          Timestamp: timestamp,
-          TransactionType: "CustomerPayBillOnline",
-          Amount: amount,
-          PartyA: `254${phone}`,	
-          PartyB: shortCode,
-          PhoneNumber:  `254${phone}`,	
-          CallBackURL:process.env.CALLBACKURL || "https://96n9704p-5050.uks1.devtunnels.ms/",	
-          AccountReference: `${phone}`,
-          TransactionDesc: "TEST",
+  const date = new Date();
+  const timestamp =
+    date.getFullYear() +
+    ("0" + (date.getMonth() + 1)).slice(-2) +
+    ("0" + date.getDate()).slice(-2) +
+    ("0" + date.getHours()).slice(-2) +
+    ("0" + date.getMinutes()).slice(-2) +
+    ("0" + date.getSeconds()).slice(-2);
+  const shortCode = process.env.MPESA_PAYBILL;
+  const passkey = process.env.MPESA_PASSKEY;
+  let token = req.token;
+
+  const password = Buffer.from(shortCode + passkey + timestamp).toString("base64");
+  console.log(req.token);
+
+  try {
+    const response = await axios.post(
+      "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest",
+      {
+        BusinessShortCode: shortCode,
+        Password: password,
+        Timestamp: timestamp,
+        TransactionType: "CustomerPayBillOnline",
+        Amount: amount,
+        PartyA: `254${phone}`,
+        PartyB: shortCode,
+        PhoneNumber: `254${phone}`,
+        CallBackURL: process.env.CALLBACKURL || "https://96n9704p-5050.uks1.devtunnels.ms/",
+        AccountReference: `${phone}`,
+        TransactionDesc: "TEST",
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
         },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          },
-        }
-      );
-      //mpesareceiptnumber  to be update from the mycallBack function
-    /*  if (response.data && response.data.ResponseCode === "0") {
-        const newTransaction = new LipaNaMpesaTransaction({
-            Amount: amount,
-            MpesaReceiptNumber: await response.data.MpesaReceiptNumber,
-            TransactionDate: timestamp,
-            PhoneNumber: phone 
-        });
-        await newTransaction.save();
-    }
-    */
+      }
+    );
+
+    // Check if the response is successful
+    if (response.data && response.data.ResponseCode === "0") {
+      const newTransaction = new LipaNaMpesaTransaction({
+        Amount: amount,
+        MpesaReceiptNumber: response.data.CheckoutRequestID,
+        TransactionDate: timestamp,
+        PhoneNumber: `254${phone}`,
+      });
+
+      // Save the transaction to the database
+      await newTransaction.save();
+      console.log(newTransaction);
+
       res.status(200).json(response.data);
-    } catch (err) {
-      console.log(err.message);
+    } else {
       res.status(500).json({ error: "Failed to make payment" });
     }
-  };
+  } catch (err) {
+    console.log(err.message);
+    res.status(500).json({ error: "Failed to make payment" });
+  }
+};
 
- // exports.handler = async (req, res) => {
-  //    console.log(req.body.Body.stkCallback);
- //   };
+  exports.handler = async (req, res) => {
+    console.log(req.body.Body.stkCallback);
+    };
   
   exports.myCallBack = async (req, res) => {
     try {
