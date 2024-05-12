@@ -2,8 +2,7 @@ name: Nodejs Mpesa API
 on:
    push:
         branches:
-        - main
-        - master
+        - fidel
         
 jobs:
   firebase-deploy:

@@ -75,10 +75,10 @@ app.post('/send-notification', async (req, res) => {
       priority: 'high',
       timeToLive: 60 * 60 * 24,
     };
-
+    
     const response = await admin.messaging().sendToDevice(tokens, payload, options);
     let hasFailure = false;
-
+    
     response.results.forEach((result, index) => {
       const error = result.error;
       if (error) {
@@ -151,4 +151,4 @@ mongoose.connection.once('open',()=>{
     console.log(`app is running at localhost:${port}`);
   });
   })
-
+  

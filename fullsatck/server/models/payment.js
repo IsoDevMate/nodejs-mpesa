@@ -28,5 +28,4 @@ const lipaNaMpesaTransactionSchema = new Schema({
     });
 
 
-
 module.exports = mongoose.model('LipaNaMpesaTransaction', lipaNaMpesaTransactionSchema)

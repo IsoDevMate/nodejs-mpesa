@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "native-functions-dd65b",
+  "private_key_id": "7844ba12e363f7e19db24c3fbaa990d72e44b0cf",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC83loYEZ/LpCFd\n++JlR56312BKMwaj7gvQ+UyFA8//95wBaSYQRCsD3xtXM6PEcBWjh3nfgP8Ltgji\niJVCQfPNwFwbBiBHGWF9kRSlChzmGu+pBcjIhnPAhYZel6uRov+oSZNlP1giKeY7\ncbf9X70wsMzcsTd7T6IubIG1HIWerxPLLv0hnpF523tFxZY7m9MmNvCOai3Ycm3o\n348q46Jem7CMsXzhbznRsbfiJnm3bvAHZCUoFrm884GCHVWQoLWAJuSvlroMjGYZ\nyF8r9P1uidtXe3qiKx1EqcdDGWdCCJcah1PevtSEYV04BWuOz1kcqMNpFnI90PFi\nPiHjWJa3AgMBAAECggEABD9tt6MyXtJMFsDfwAG4UzqCEncCuewhPQm7reAtpGKz\n1lxrJtbWc1zwtwuIC/Sc/de5azclRVOoZ5C0GmonYn2RBdCSjqwkbc9xwFI6I5Az\nU57RhGULEklwo+q5863x2S66+gashgD65+x8/8Ql1dlo6Q3mGnJzBiwz+WlOxpDv\n3CFpCEK7T/Xc5td1EHQWadomqklGWIJeeRFZaByZqYKD+kZluEvQmGhdkg5wetgv\nemPa9YxUk5SxUqLEkVGN3appPhfO4FKw/HMOsshJiAlsNucfDNJH/GY9tWuXWOKt\nZD/mjz8914ZLbMLBkB45Bz6C3GgRmHUmGZ+JrgmXHQKBgQD0jBkkCSO2zYHQpsdE\nUL/7+2BjiYu6ubLDKDGb7LlSdZ4oydlU1E3I4OgKPz918QSGXpoV5LjRof+jM9zE\ne8QI/pw9SV+ctjBRXmyAIErMf8xVMPZUEmP9tgfTsUiR9QK8vqP+p8tvGVp959JN\n64LPrP7UxdqIpUA21+f1KAz5TQKBgQDFtrdZT94Da5DViurQiOe+ToM1vON7Gz5a\nX1s8c0sISz1iJ7AZyBkVMsgkX1g1OwruOn7971p1LD65aS+b6+pzD3vHk2vj1/Fj\nHOEEtca5e3EFLSMO2MVAhPcp6lFc3+ChnlQBAX3W1m+4glVGUwI73sWydD+HzZ3/\n3H+eys9uEwKBgC9Qi+y09/v+dwdvvU4ycXLHiDa5/hb6puOrey2394NEzn0F0M7g\n5Mvg+ARDiHvBTibRVu61eizVMyjYd/ZsG9nBqWkSMTWY6nBT3JpNpSs77sTs3DwX\n8tC7z3fd7TSQOx9Zo1E6FdpBBYkmuUHqNz0HM6bnQQj/MBVsYKzGOvxhAoGBAKke\nySkJa1Qrn6E6Ce/FG84qpIvD/iXgwO5W4NkNmeIHUgNzBWyYP/RlEtQiBnbKAWiT\n+urF4e+WoDTDJ+lM3Kf9V5j4nnIv1hg8rLH1t34TfDK8UF+zxs6QrkdZWq2CB0jY\nAO03VGf/12LRgZX9DU0fGqayT2Gf3YXuG/A9dT+nAoGADxmLqDDVb/+vKUyn9+vQ\nvMQgfZFwB8rDY1aqYE/ZliXR0sY6J4B6L7PiOI0ArSi3Pu/CkTYVcD9uJ3MbjIdu\nwtt8r2Azx30dH84FrGcC7nEbT2Q1TYAuKv5kgLtQYdtb6FFGxzjY87MHH3zi4HQO\nCSqHSIgUwe7ZL0dzvSbC+9E=\n-----END PRIVATE KEY-----\n",
+  "client_email": "github-action-cronjob@native-functions-dd65b.iam.gserviceaccount.com",
+  "client_id": "103558306078471067325",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/github-action-cronjob%40native-functions-dd65b.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
-
 const Container = styled.div`
   max-width: 600px;
   margin: 0 auto;
@@ -85,6 +84,7 @@ const Checkout = () => {
   };
 
   return (
+    <>
     <Container>
       <Title>MPESA STK Push</Title>
       <form onSubmit={handleSubmit}>
@@ -107,6 +107,10 @@ const Checkout = () => {
         <Button type="submit">Pay Now</Button>
       </form>
     </Container>
+    <div className="container mx-auto px-4">
+    </div>
+    
+    </>
   );
 };
 
