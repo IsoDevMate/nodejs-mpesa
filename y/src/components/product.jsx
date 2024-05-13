@@ -64,4 +64,4 @@ const CheckoutButton = ({ cart }) => {
   return <CheckoutButtons onClick={handleCheckout}>Checkout</CheckoutButtons>;
 };
 
-export default Products;S
+export default Products;
