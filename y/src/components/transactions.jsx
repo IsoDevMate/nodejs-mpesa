@@ -1,12 +1,22 @@
 import  { useState, useEffect } from 'react';
-import { Box, Typography, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
+import { Box, Typography, Accordion, AccordionSummary, AccordionDetails, MenuItem, FormControl, Select } from '@mui/material';
 import { ChevronDownIcon } from '@heroicons/react/24/solid';
 import axios from 'axios';
 
+//define an object for selecting the dates 
+const dateOptions = [
+  { value: '01 JAN, 2024 - 01 APRIL, 2024', label: 'January 2024 - April 2024' },
+  { value: '01 APRIL, 2024 - 01 JULY, 2024', label: 'April 2024 - July 2024' },
+  { value: '01 JULY, 2023 - 01 OCTOBER, 2024', label: 'July 2023 - October 2024' },
+  { value: '01 OCTOBER, 2023 - 01 JAN, 2024', label: 'October 2023 - January 2024' },
+];
 const TransactionHistory = () => {
   const [transactions, setTransactions] = useState([]);
-  const [selectedDate, setSelectedDate] = useState('01 JAN, 2023 - 01 JAN, 2024');
+  const [selectedDateOption, setSelectedDateOption] = useState(dateOptions[0].value);
 
+  const handleDateChange = (event) => {
+    setSelectedDateOption(event.target.value);
+  };
   useEffect(() => {
     const fetchTransactions = async () => {
       try {
@@ -21,22 +31,32 @@ const TransactionHistory = () => {
     fetchTransactions(); 
   }, []);
 
-  const groupTransactionsByMonth = (transactions) => {
-    const groupedTransactions = {};
+ 
+  const groupTransactionsByMonth = (transactions, selectedDateOption) => {
+  const [startDate, endDate] = selectedDateOption.split(' - ');
+  const parsedStartDate = new Date(`${startDate.slice(-4)}, ${startDate.slice(0, 6)}, ${startDate.slice(6, 8)}`);
+  const parsedEndDate = new Date(`${endDate.slice(-4)}, ${endDate.slice(0, 6)}, ${endDate.slice(6, 8)}`);
 
-    transactions.forEach((transaction) => {
-      const month = new Date(transaction.TransactionDate).toLocaleString('default', { month: 'long' });
-      const year = new Date(transaction.TransactionDate).getFullYear();
+  const filteredTransactions = transactions.filter((transaction) => {
+    const transactionDate = new Date(transaction.TransactionDate);
+    return transactionDate >= parsedStartDate && transactionDate <= parsedEndDate;
+  });
 
-      if (!groupedTransactions[`${month} ${year}`]) {
-        groupedTransactions[`${month} ${year}`] = [];
-      }
+  const groupedTransactions = {};
 
-      groupedTransactions[`${month} ${year}`].push(transaction);
-    });
+  filteredTransactions.forEach((transaction) => {
+    const month = new Date(transaction.TransactionDate).toLocaleString('default', { month: 'long' });
+    const year = new Date(transaction.TransactionDate).getFullYear();
 
-    return groupedTransactions;
-  };
+    if (!groupedTransactions[`${month} ${year}`]) {
+      groupedTransactions[`${month} ${year}`] = [];
+    }
+
+    groupedTransactions[`${month} ${year}`].push(transaction);
+  });
+
+  return groupedTransactions;
+};
 
   const groupedTransactions = groupTransactionsByMonth(transactions);
 
@@ -50,10 +70,22 @@ const TransactionHistory = () => {
         Track and monitor your financial activity.
       </Typography>
       <Box className="bg-white rounded-lg p-2 mb-4">
-        <Typography variant="body2" className="text-gray-600">
-          {selectedDate}
+          <FormControl fullWidth>
+            <Select
+              value={selectedDateOption}
+              onChange={handleDateChange}
+            >
+              {dateOptions.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Box>
+        <Typography variant="body2" className="text-gray-600 mb-2">
+          Selected Period: {dateOptions.find((option) => option.value === selectedDateOption)?.label}
         </Typography>
-      </Box>
       {Object.keys(groupedTransactions).map((month) => (
         <Accordion key={month} className="bg-white rounded-lg mb-2 shadow-sm">
           <AccordionSummary
@@ -70,6 +102,9 @@ const TransactionHistory = () => {
               <Box key={transaction._id} className="flex justify-between items-center mb-2">
                 <Typography variant="body2" className="text-gray-600">
                   {transaction.MpesaReceiptNumber}
+                </Typography>
+                <Typography variant="body2" className="text-gray-600">
+                  {transaction.PhoneNumber}
                 </Typography>
                 <Typography
                   variant="body2"
