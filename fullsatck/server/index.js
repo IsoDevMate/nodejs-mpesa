@@ -24,7 +24,7 @@ app.use(cors());
 // connect Database
 connectDB(); 
 
-/// apis
+/// apis//
 app.use('/api',transactions)
 
 cron.schedule('*/5 * * * *', () => {
