@@ -20,7 +20,7 @@ const TransactionHistory = () => {
   useEffect(() => {
     const fetchTransactions = async () => {
       try {
-        const response = await axios.get('http://localhost:5050/api/allTransactions');
+        const response = await axios.get('https://nodejs-mpesa.onrender.com/api/allTransactions');
         console.log(response.data)
         setTransactions(response.data);
       } catch (error) {
@@ -32,31 +32,22 @@ const TransactionHistory = () => {
   }, []);
 
  
-  const groupTransactionsByMonth = (transactions, selectedDateOption) => {
-  const [startDate, endDate] = selectedDateOption.split(' - ');
-  const parsedStartDate = new Date(`${startDate.slice(-4)}, ${startDate.slice(0, 6)}, ${startDate.slice(6, 8)}`);
-  const parsedEndDate = new Date(`${endDate.slice(-4)}, ${endDate.slice(0, 6)}, ${endDate.slice(6, 8)}`);
+  const groupTransactionsByMonth = (transactions) => {
+    const groupedTransactions = {};
 
-  const filteredTransactions = transactions.filter((transaction) => {
-    const transactionDate = new Date(transaction.TransactionDate);
-    return transactionDate >= parsedStartDate && transactionDate <= parsedEndDate;
-  });
+    transactions.forEach((transaction) => {
+      const month = new Date(transaction.TransactionDate).toLocaleString('default', { month: 'long' });
+      const year = new Date(transaction.TransactionDate).getFullYear();
 
-  const groupedTransactions = {};
+      if (!groupedTransactions[`${month} ${year}`]) {
+        groupedTransactions[`${month} ${year}`] = [];
+      }
 
-  filteredTransactions.forEach((transaction) => {
-    const month = new Date(transaction.TransactionDate).toLocaleString('default', { month: 'long' });
-    const year = new Date(transaction.TransactionDate).getFullYear();
+      groupedTransactions[`${month} ${year}`].push(transaction);
+    });
 
-    if (!groupedTransactions[`${month} ${year}`]) {
-      groupedTransactions[`${month} ${year}`] = [];
-    }
-
-    groupedTransactions[`${month} ${year}`].push(transaction);
-  });
-
-  return groupedTransactions;
-};
+    return groupedTransactions;
+  };
 
   const groupedTransactions = groupTransactionsByMonth(transactions);
 

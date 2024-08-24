@@ -66,7 +66,7 @@ const Checkout = () => {
         phone: phoneNumber,
       };
 
-      const url = 'http://localhost:5050/api/stk';
+      const url = 'https://nodejs-mpesa.onrender.com/api/stk';
       const response = await axios.post(url, payload);
       console.log(response.data);
 
