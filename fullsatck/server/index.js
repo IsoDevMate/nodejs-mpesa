@@ -6,7 +6,7 @@ const mongoose=require('mongoose')
 const connectDB=require('./trnxDb')
 const port = process.env.PORT || 5050;
 const transactions=require('./routes/transactions')
-
+const cron = require('node-cron');
 const Token=require('./models/TokenSchema')
 var admin = require("firebase-admin");
 
@@ -26,6 +26,15 @@ connectDB();
 
 // apis
 app.use('/api',transactions)
+
+cron.schedule('*/5 * * * *', () => {
+  console.log('Running keep-alive task');
+  https.get(`https://losh-site.onrender.com/keep-alive`, (resp) => {
+    console.log('Keep-alive request sent');
+  }).on('error', (err) => {
+    console.log('Error in keep-alive request: ' + err.message);
+  });
+});
 
 app.get("/", (req, res) => {
   res.send("Hello World");
