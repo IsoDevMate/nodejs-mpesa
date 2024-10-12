@@ -39,7 +39,7 @@ exports.payAmount = async (req, res) => {
         PartyA: `254${phone}`,
         PartyB: shortCode,
         PhoneNumber: `254${phone}`,
-        CallBackURL: process.env.CALLBACKURL || "https://96n9704p-5050.uks1.devtunnels.ms/",
+        CallBackURL: process.env.CALLBACKURL || "https://nodejs-mpesa-1.onrender.com",
         AccountReference: `${phone}`,
         TransactionDesc: "TEST",
       },
