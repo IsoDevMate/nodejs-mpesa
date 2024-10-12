@@ -15,5 +15,13 @@ router.post("/handler",transacControllers.handler)
 //STEP 6:Fetch one transaction
 router.get("/oneTransaction/:id",transacControllers.fetchOneTransaction)
 router.post("stkpushquery/",getAccessToken,transacControllers.stkpushQuery)
+router.get('/register',getAccessToken, transacControllers.registerURLs);
+
+
+router.post('/c2b/v1/confirm', transacControllers.confirmation);
+
+
+router.post('/c2b/v1/validate', transacControllers.validation);
+
 
 module.exports=router;

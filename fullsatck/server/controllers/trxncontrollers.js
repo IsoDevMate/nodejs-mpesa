@@ -2,6 +2,8 @@ const axios=require('axios')
 //const Transaction = require('../models/payment');
 const LipaNaMpesaTransaction = require('../models/payment');
 const prettyjson = require('prettyjson');
+const request = require('request');
+
 exports.payAmount = async (req, res) => {
   console.log('Request Body:', req.body);
   if (!req.body.phone) {
@@ -39,7 +41,7 @@ exports.payAmount = async (req, res) => {
         PartyA: `254${phone}`,
         PartyB: shortCode,
         PhoneNumber: `254${phone}`,
-        CallBackURL: process.env.CALLBACKURL || "https://nodejs-mpesa-1.onrender.com",
+        CallBackURL: process.env.CALLBACKURL || "https://nodejs-mpesa-1.onrender.com/api",
         AccountReference: `${phone}`,
         TransactionDesc: "TEST",
       },
@@ -52,16 +54,16 @@ exports.payAmount = async (req, res) => {
 
     // Check if the response is successful
     if (response.data && response.data.ResponseCode === "0") {
-      const newTransaction = new LipaNaMpesaTransaction({
-        Amount: amount,
-        MpesaReceiptNumber: response.data.CheckoutRequestID,
-        TransactionDate: timestamp,
-        PhoneNumber: `254${phone}`,
-      });
-
-      // Save the transaction to the database
-      await newTransaction.save();
-      console.log(newTransaction);
+   //   const newTransaction = new LipaNaMpesaTransaction({
+   //     Amount: amount,
+   //     MpesaReceiptNumber: response.data.CheckoutRequestID,
+   //     TransactionDate: timestamp,
+   //     PhoneNumber: `254${phone}`,
+   //   });
+//
+   //   // Save the transaction to the database
+   //   await newTransaction.save();
+   //   console.log(newTransaction);
 
       res.status(200).json(response.data);
     } else {
@@ -172,7 +174,6 @@ exports.payAmount = async (req, res) => {
     }
     else{
       console.log("stkCallback is missing in the request body");
-
   }
   }} catch (e) {
     console.error("Error while trying to update LipaNaMpesa details from the callback", e);
@@ -182,6 +183,59 @@ exports.payAmount = async (req, res) => {
     });
 }
 }
+
+
+// Register URLs for C2B
+exports.registerURLs = (req, res) => {
+    const url = "https://sandbox.safaricom.co.ke/mpesa/c2b/v1/registerurl";
+    const auth = "Bearer " + req.token;
+    const shortCode = process.env.MPESA_PAYBILL;
+    const responseType = "Completed";
+    
+    const confirmationURL = process.env.MPESA_CONFIRMATION_URL || "https://nodejs-mpesa-1.onrender.com/api";
+    const validationURL = process.env.MPESA_VALIDATION_URL || "https://nodejs-mpesa-1.onrender.com/api";
+    const reqBody = {
+        ShortCode: shortCode,
+        ResponseType: responseType,
+        ConfirmationURL: confirmationURL,
+        ValidationURL: validationURL,
+    };
+    const options = {
+        url: url,
+        headers: {
+            Authorization: auth,
+        },
+        json: reqBody,
+    };
+
+    request(options, (error, response, body) => {
+        if (error) {
+            console.log(error);
+            return res.status(500).json({ error: "Failed to register URLs" });
+        } else {
+            return res.status(200).json(body);
+        }
+    });
+};
+
+// Confirmation URL (to handle callbacks from Safaricom)
+exports.confirmation = (req, res) => {
+    console.log("Confirmation", req.body);
+    res.status(200).json({
+        ResultCode: 0,
+        ResultDesc: "Success",
+    });
+};
+
+// Validation URL (to handle callbacks for validation)
+exports.validation = (req, res) => {
+    console.log("Validation", req.body);
+    res.status(200).json({
+        ResultCode: 0,
+        ResultDesc: "Success",
+    });
+};
+
 
 exports.stkpushQuery=async (req, res) => {
   const CheckoutRequestID = req.body.CheckoutRequestID;
