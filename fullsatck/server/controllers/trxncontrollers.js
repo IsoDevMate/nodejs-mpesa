@@ -186,36 +186,39 @@ exports.payAmount = async (req, res) => {
 
 
 // Register URLs for C2B
-exports.registerURLs = (req, res) => {
-    const url = "https://sandbox.safaricom.co.ke/mpesa/c2b/v1/registerurl";
-    const auth = "Bearer " + req.token;
-    const shortCode = process.env.MPESA_PAYBILL;
-    const responseType = "Completed";
-    
-    const confirmationURL = process.env.MPESA_CONFIRMATION_URL || "https://nodejs-mpesa-1.onrender.com/api";
-    const validationURL = process.env.MPESA_VALIDATION_URL || "https://nodejs-mpesa-1.onrender.com/api";
-    const reqBody = {
-        ShortCode: shortCode,
-        ResponseType: responseType,
-        ConfirmationURL: confirmationURL,
-        ValidationURL: validationURL,
-    };
-    const options = {
-        url: url,
-        headers: {
-            Authorization: auth,
-        },
-        json: reqBody,
-    };
+exports.registerURLs = async (req, res) => {
+  const url = "https://sandbox.safaricom.co.ke/mpesa/c2b/v1/registerurl";
+  const auth = "Bearer " + req.token;
+  const shortCode = process.env.MPESA_PAYBILL;
+  const responseType = "Completed";
+  
+  const confirmationURL = process.env.MPESA_CONFIRMATION_URL || "https://nodejs-mpesa-1.onrender.com/api/c2b/v1/confirm";
+  const validationURL = process.env.MPESA_VALIDATION_URL || "https://nodejs-mpesa-1.onrender.com/api/c2b/v1/validate";
+  
+  const reqBody = {
+      ShortCode: shortCode,
+      ResponseType: responseType,
+      ConfirmationURL: confirmationURL,
+      ValidationURL: validationURL,
+  };
+   console.log("requestbody",reqBody)
+  try {
+      const response = await axios.post(url, reqBody, {
+          headers: {
+              Authorization: auth,
+              'Content-Type': 'application/json'
+          }
+      });
 
-    request(options, (error, response, body) => {
-        if (error) {
-            console.log(error);
-            return res.status(500).json({ error: "Failed to register URLs" });
-        } else {
-            return res.status(200).json(body);
-        }
-    });
+      // Send success response
+      console.log('Successfully registered URLs:', response.data);
+      return res.status(200).json(response.data);
+
+  } catch (error) {
+      console.error('Error registering URLs:', error.message);
+      // Send error response
+      return res.status(500).json({ error: "Failed to register URLs", details: error.message });
+  }
 };
 
 // Confirmation URL (to handle callbacks from Safaricom)
